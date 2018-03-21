@@ -5,10 +5,13 @@
 
     <ImageView
         android:id="@+id/expandedListItem"
-        android:layout_width="fill_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="10dp"
+     />
 
 </android.support.constraint.ConstraintLayout>
+
+
+    <!--        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" -->

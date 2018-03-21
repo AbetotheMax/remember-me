@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.constraint.ConstraintLayout;
+import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +37,8 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
 
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
+        //return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
+        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition));
 
     }
 
@@ -48,17 +52,22 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final Card expandedListCard = (Card) getChild(listPosition, expandedListPosition);
+        final List<Card> expandedListCards = (List<Card>) getChild(listPosition, expandedListPosition);
 
         if(convertView == null) {
 
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService((Context.LAYOUT_INFLATER_SERVICE));
-            convertView = layoutInflater.inflate(R.layout.list_item, null);
+            convertView = layoutInflater.inflate(R.layout.expandable_list_child, null);
 
         }
 
-        ImageView expandedListImageView = (ImageView) convertView.findViewById(R.id.expandedListItem);
-        expandedListImageView.setImageResource(expandedListCard.getCardImageId());
+        HorizontalGridView gridView = (HorizontalGridView) convertView.findViewById(R.id.gridView);
+        GridAdapter adapter = new GridAdapter(context, expandedListCards);
+        gridView.setAdapter(adapter);
+        gridView.setNumRows(1);
+        gridView.setRowHeight(500);
+        gridView.setVerticalSpacing(5);
+
         return convertView;
 
     }
@@ -66,7 +75,8 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int listPosition) {
 
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        return 1;
+        //return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
 
     }
 
