@@ -6,7 +6,10 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
 import android.support.v17.leanback.widget.HorizontalGridView;
+import android.support.v17.leanback.widget.OnChildSelectedListener;
+import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Marc on 3/15/2018.

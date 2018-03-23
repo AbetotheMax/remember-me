@@ -17,6 +17,8 @@ public class LearnNewDeck extends AppCompatActivity {
     private ViewPager viewPager;
     private ImagePagerAdapter adapter;
 
+    public static final String LEARNED_DECK = "com.example.marc.rememberme.feature.DECK";
+
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
 
@@ -62,6 +64,7 @@ public class LearnNewDeck extends AppCompatActivity {
     public void recallDeck(View view) {
 
         Intent intent = new Intent(this, RecallDeck.class);
+        intent.putExtra(LEARNED_DECK, deck);
         startActivity(intent);
 
     }

@@ -1,6 +1,8 @@
 package com.example.marc.rememberme.feature;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Marc on 2/27/2018.
  */
 
-public class Deck {
+public class Deck implements Parcelable{
 
     private List<Card> cards;
 
@@ -72,5 +74,44 @@ public class Deck {
         }
 
     }
+
+    public Deck(Parcel in) {
+
+        this.cards = new ArrayList<>();
+        in.readTypedList(cards, Card.CREATOR);
+
+    }
+
+
+    @Override
+
+    public int describeContents() {
+
+        return 0;
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeTypedList(cards);
+
+    }
+
+    public static final Parcelable.Creator<Deck> CREATOR = new Parcelable.Creator<Deck>() {
+
+        public Deck createFromParcel(Parcel in) {
+
+            return new Deck(in);
+
+        }
+
+        public Deck[] newArray(int size) {
+
+            return new Deck[size];
+
+        }
+
+    };
 
 }

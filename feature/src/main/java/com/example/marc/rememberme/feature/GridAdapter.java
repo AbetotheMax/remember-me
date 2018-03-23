@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -44,6 +45,12 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
     public void onBindViewHolder(SimpleViewHolder holder, final int position) {
         Card expandedListCard = getItem(position);
         holder.expandedListImageView.setImageResource(expandedListCard.getCardImageId());
+        holder.expandedListImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Position: " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     @Override
     public int getItemCount() {
