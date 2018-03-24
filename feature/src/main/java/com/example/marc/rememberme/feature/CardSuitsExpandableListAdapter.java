@@ -9,6 +9,7 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v17.leanback.widget.OnChildSelectedListener;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,12 +30,16 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private List<Suit> expandableListTitle;
     private HashMap<Suit, List<Card>> expandableListDetail;
+    private Deck recallDeck;
+    private ViewPager pager;
 
-    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail) {
+    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail, Deck recallDeck, ViewPager pager) {
 
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
+        this.recallDeck = recallDeck;
+        this.pager = pager;
 
     }
 
@@ -66,7 +71,7 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         HorizontalGridView gridView = (HorizontalGridView) convertView.findViewById(R.id.gridView);
-        GridAdapter adapter = new GridAdapter(context, expandedListCards);
+        GridAdapter adapter = new GridAdapter(context, expandedListCards, recallDeck, pager);
         gridView.setAdapter(adapter);
         gridView.setNumRows(1);
         gridView.setRowHeight(500);

@@ -17,6 +17,12 @@ public class Deck implements Parcelable{
 
     private List<Card> cards;
 
+    public Deck() {
+
+        this.cards = new ArrayList<>();
+
+    }
+
     public Deck(Context current) {
 
         this.cards = makeDeck(current);
@@ -57,6 +63,12 @@ public class Deck implements Parcelable{
     public Card getCard(int index) {
 
         return cards.get(index);
+
+    }
+
+    public boolean add(Card card) {
+
+        return this.cards.add(card);
 
     }
 

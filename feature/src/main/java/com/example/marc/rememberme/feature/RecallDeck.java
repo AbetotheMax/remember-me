@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +24,8 @@ public class RecallDeck extends AppCompatActivity {
     ExpandableListAdapter expandableListAdapter;
     List<Suit> expandableListTitle;
     HashMap<Suit, List<Card>> expandableListDetail;
-    ViewPager viewPager;
-    ImagePagerAdapter adapter;
     Deck deckToRecall;
+    private ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +35,13 @@ public class RecallDeck extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         deckToRecall = bundle.getParcelable(LEARNED_DECK);
-        initializePagerView(deckToRecall);
+        pager = (ViewPager) findViewById(R.id.recallDeckPager);
+
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         expandableListDetail = CardSuitsExpandableListDataPump.getData(this);
         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
-        expandableListAdapter = new CardSuitsExpandableListAdapter(this, expandableListTitle, expandableListDetail);
+        expandableListAdapter = new CardSuitsExpandableListAdapter(this, expandableListTitle, expandableListDetail, deckToRecall, pager);
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
@@ -72,14 +71,6 @@ public class RecallDeck extends AppCompatActivity {
 
             }
         });
-
-    }
-
-    private void initializePagerView(Deck deck) {
-
-        viewPager = findViewById(R.id.recallDeckPager);
-        adapter = new ImagePagerAdapter(deck, this);
-        viewPager.setAdapter(adapter);
 
     }
 
