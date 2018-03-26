@@ -19,12 +19,12 @@
 
     <ImageView
         android:id="@+id/recallDeckImageView"
-        android:layout_width="395dp"
-        android:layout_height="500dp"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@id/expandableListView"
         app:layout_constraintTop_toBottomOf="@id/cancelButton">
 
@@ -35,13 +35,14 @@
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@+id/expandableListView"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cancelButton"
         app:layout_constraintVertical_bias="0.111" />
+
+
 <!--
     <TextView
         android:id="@+id/currentPositionText"
@@ -62,7 +63,7 @@
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="395dp"
-        android:layout_height="500dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:divider="@android:color/darker_gray"

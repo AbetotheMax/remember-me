@@ -20,21 +20,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
 
     private Context context;
     private final List<Card> items;
-    private final Deck recallDeck;
-    private Deck workingRecallDeck;
-    private int recallPosition = 0;
-    public ViewPager recallPager;
-    public ImagePagerAdapter adapter;
+    private DeckRecallResults results;
 
 
     public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager) {
 
         this.context = context;
         this.items = items;
-        this.recallDeck = recallDeck;
-        this.recallPager = pager;
-        workingRecallDeck = new Deck();
-        initializePagerView(workingRecallDeck);
+        this.results = DeckRecallResults.getInstance(recallDeck, context, pager);
 
     }
 
@@ -60,7 +53,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
         holder.expandedListImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showResult();
+                results.showResult();
             }
         });
     }
@@ -84,24 +77,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
 
     }
 
-    private void initializePagerView(Deck deck) {
 
-        adapter = new ImagePagerAdapter(deck, context);
-        recallPager.setAdapter(adapter);
-
-    }
-
-    private void showResult() {
-
-        if (recallPosition < recallDeck.getCards().size()) {
-
-            workingRecallDeck.add(recallDeck.getCard(recallPosition));
-            adapter.notifyDataSetChanged();
-            recallPager.setCurrentItem(recallPosition);
-            recallPosition++;
-
-        }
-
-    }
 
 }
