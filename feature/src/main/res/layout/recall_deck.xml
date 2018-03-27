@@ -10,12 +10,26 @@
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:onClick="cancel"
         android:text="Cancel"
+        app:layout_constraintEnd_toStartOf="@+id/currentPositionText"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/errorCountText"
+        android:layout_width="109dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:text="Errors: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
+        app:layout_constraintEnd_toStartOf="@+id/chronometer2"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/recallDeckImageView"
@@ -42,24 +56,6 @@
         app:layout_constraintTop_toBottomOf="@+id/cancelButton"
         app:layout_constraintVertical_bias="0.111" />
 
-
-<!--
-    <TextView
-        android:id="@+id/currentPositionText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test text"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="33dp" />
-
-    <TextClock
-        android:id="@+id/textClock"
-        android:layout_width="58dp"
-        android:layout_height="21dp"
-        tools:layout_editor_absoluteX="304dp"
-        tools:layout_editor_absoluteY="31dp" />
--->
     <ExpandableListView
         android:id="@+id/expandableListView"
         android:layout_width="395dp"
@@ -73,6 +69,40 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Chronometer
+        android:id="@+id/chronometer2"
+        android:layout_width="58dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/currentPositionText"
+        android:layout_width="96dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Card:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
+        app:layout_constraintEnd_toStartOf="@+id/errorCountText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 
 
 </android.support.constraint.ConstraintLayout>

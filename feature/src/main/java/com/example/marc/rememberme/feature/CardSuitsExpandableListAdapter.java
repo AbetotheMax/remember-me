@@ -32,21 +32,22 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     private HashMap<Suit, List<Card>> expandableListDetail;
     private Deck recallDeck;
     private ViewPager pager;
+    private View rootView;
 
-    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail, Deck recallDeck, ViewPager pager) {
+    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail, Deck recallDeck, ViewPager pager, View rootView) {
 
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
         this.recallDeck = recallDeck;
         this.pager = pager;
+        this.rootView = rootView;
 
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
 
-        //return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
         return this.expandableListDetail.get(this.expandableListTitle.get(listPosition));
 
     }
@@ -71,7 +72,7 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         HorizontalGridView gridView = (HorizontalGridView) convertView.findViewById(R.id.gridView);
-        GridAdapter adapter = new GridAdapter(context, expandedListCards, recallDeck, pager);
+        GridAdapter adapter = new GridAdapter(context, expandedListCards, recallDeck, pager, rootView);
         gridView.setAdapter(adapter);
         gridView.setNumRows(1);
         gridView.setRowHeight(500);
@@ -85,7 +86,6 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int listPosition) {
 
         return 1;
-        //return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
 
     }
 

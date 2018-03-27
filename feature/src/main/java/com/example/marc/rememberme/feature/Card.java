@@ -11,7 +11,7 @@ import android.support.v4.content.ContextCompat;
  * Created by Marc on 2/27/2018.
  */
 
-class Card implements Parcelable{
+class Card implements Parcelable {
 
     private Suit suit;
     private CardNumber cardNumber;
@@ -42,6 +42,29 @@ class Card implements Parcelable{
     public Card getCard() {
 
         return this;
+
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(o == null) return false;
+        if(!(o instanceof Card)) return false;
+
+        Card card = (Card) o;
+
+        return ((Card) o).getSuit().getValue() == this.getSuit().getValue() && ((Card) o).getCardNumber().getValue() == this.getCardNumber().getValue();
+
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = 17;
+        result = 31 * result + this.getSuit().hashCode();
+        result = 31 * result + this.getCardNumber().hashCode();
+
+        return result;
 
     }
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,15 +20,16 @@ import java.util.List;
 public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHolder>{
 
     private Context context;
+    private View recallView;
     private final List<Card> items;
     private DeckRecallResults results;
 
 
-    public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager) {
+    public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager, View view) {
 
         this.context = context;
         this.items = items;
-        this.results = DeckRecallResults.getInstance(recallDeck, context, pager);
+        this.results = DeckRecallResults.getInstance(recallDeck, context, pager, view);
 
     }
 
@@ -42,18 +44,24 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
 
     @Override
     public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(this.context).inflate(R.layout.list_item, parent, false);
+        View view = LayoutInflater.from(this.context).inflate(R.layout.list_item, parent, false);
         return new SimpleViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(SimpleViewHolder holder, final int position) {
-        Card expandedListCard = getItem(position);
+        final Card expandedListCard = getItem(position);
         holder.expandedListImageView.setImageResource(expandedListCard.getCardImageId());
         holder.expandedListImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                results.showResult();
+                if(!results.isSelectionCorrect(expandedListCard)) {
+
+                    results.updateErrors();
+
+                }
+
+                results.updateProgress();
             }
         });
     }
@@ -76,7 +84,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
         return position;
 
     }
-
 
 
 }
