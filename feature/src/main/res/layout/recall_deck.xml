@@ -23,11 +23,11 @@
         android:id="@+id/errorCountText"
         android:layout_width="109dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:text="Errors: "
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.Switch"
-        app:layout_constraintEnd_toStartOf="@+id/chronometer2"
+        app:layout_constraintEnd_toStartOf="@+id/recallChronometer"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -71,7 +71,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Chronometer
-        android:id="@+id/chronometer2"
+        android:id="@+id/recallChronometer"
         android:layout_width="58dp"
         android:layout_height="39dp"
         android:layout_marginEnd="24dp"

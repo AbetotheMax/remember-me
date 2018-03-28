@@ -15,7 +15,6 @@ public class DeckRecallResults {
     private Deck workingRecallDeck;
     private int recallPosition = 0;
     private int errorCount = 0;
-    private int currentPosition = 0;
     private int numCards = 0;
     private Context context;
     public ViewPager recallPager;
@@ -57,13 +56,13 @@ public class DeckRecallResults {
 
     public boolean isSelectionCorrect(Card selectedCard) {
 
-        boolean cardsMatch = false;
+        boolean cardsMatch = true;
 
         if (recallPosition < recallDeck.getCards().size()) {
 
-            if(selectedCard.equals(recallDeck.getCard(recallPosition))) {
+            if(!selectedCard.equals(recallDeck.getCard(recallPosition))) {
 
-                cardsMatch = true;
+                cardsMatch = false;
 
             }
 
@@ -86,12 +85,18 @@ public class DeckRecallResults {
 
     }
 
-    public void updateProgress() {
+    public int updateProgress() {
 
-        currentPosition++;
-        String currentPositionText = currentPosition + " / " + numCards;
+        String currentPositionText = recallPosition + " / " + numCards;
         TextView textView = (TextView) recallView.findViewById(R.id.currentPositionText);
         textView.setText(currentPositionText);
+        return recallPosition;
+
+    }
+
+    public boolean atEndOfRecallDeck() {
+
+        return recallPosition >= recallDeck.getCards().size();
 
     }
 

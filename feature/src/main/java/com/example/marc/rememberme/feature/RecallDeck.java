@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
@@ -26,6 +28,7 @@ public class RecallDeck extends AppCompatActivity {
     HashMap<Suit, List<Card>> expandableListDetail;
     Deck deckToRecall;
     private ViewPager pager;
+    private Chronometer chronometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,25 +46,6 @@ public class RecallDeck extends AppCompatActivity {
         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
         expandableListAdapter = new CardSuitsExpandableListAdapter(this, expandableListTitle, expandableListDetail, deckToRecall, pager, findViewById(android.R.id.content));
         expandableListView.setAdapter(expandableListAdapter);
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-
-                Log.d("STATE","expanding group");
-
-            }
-
-        });
-
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-
-            }
-        });
-
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -71,6 +55,15 @@ public class RecallDeck extends AppCompatActivity {
 
             }
         });
+
+        chronometer = (Chronometer) findViewById(R.id.recallChronometer);
+        chronometer.start();
+
+    }
+
+    public void cancel(View view) {
+
+        chronometer.stop();
 
     }
 

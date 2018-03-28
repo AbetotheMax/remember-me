@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
         this.context = context;
         this.items = items;
         this.results = DeckRecallResults.getInstance(recallDeck, context, pager, view);
+        this.recallView = view;
 
     }
 
@@ -62,6 +64,12 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
                 }
 
                 results.updateProgress();
+                if(results.atEndOfRecallDeck()) {
+
+                    Chronometer chronometer = recallView.findViewById(R.id.recallChronometer);
+                    chronometer.stop();
+
+                }
             }
         });
     }
