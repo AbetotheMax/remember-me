@@ -9,17 +9,20 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by Marc on 3/28/2018.
  */
 
-@Entity(foreignKeys = @ForeignKey(entity = Games.class, parentColumns = "GAME_ID", childColumns = "GAME_ID"), tableName = "GAME_STATES")
+@Entity(
+        tableName = "GAME_STATES",
+        primaryKeys = {"GAME_ID", "STATE", "STATUS"},
+        foreignKeys = @ForeignKey(entity = Games.class, parentColumns = "GAME_ID", childColumns = "GAME_ID"))
 public class GameStates {
 
     @ColumnInfo(name = "GAME_ID")
     private int gameId;
 
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "STATE_ID")
-    private int stateId;
+    @ColumnInfo(name = "STATE")
+    private String state;
 
-    @ColumnInfo(name = "STATE_DESC")
-    private String stateDescription;
+    @ColumnInfo(name = "STATUS")
+    private String status;
 
     public void setGameId(int id) {
 
@@ -33,27 +36,27 @@ public class GameStates {
 
     }
 
-    public void setStateId(int id) {
+    public void setState(String state) {
 
-        this.stateId = id;
-
-    }
-
-    public int getStateId() {
-
-        return this.stateId;
+        this.state = state;
 
     }
 
-    public void setStateDescription(String description) {
+    public String getState() {
 
-        this.stateDescription = description;
+        return this.state;
 
     }
 
-    public String getStateDescription() {
+    public void setStatus(String status) {
 
-        return this.stateDescription;
+        this.status = status;
+
+    }
+
+    public String getStatus() {
+
+        return this.status;
 
     }
 
