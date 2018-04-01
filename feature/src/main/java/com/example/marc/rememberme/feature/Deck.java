@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Deck implements Parcelable{
 
     private List<Card> cards;
+    private int numDecks;
 
     public Deck() {
 
@@ -25,8 +26,14 @@ public class Deck implements Parcelable{
 
     public Deck(Context current) {
 
-        this.cards = makeDeck(current);
+        new Deck(current, 1);
 
+    }
+
+    public Deck(Context current, int numDecks) {
+
+        this.numDecks = numDecks;
+        this.cards = makeDeck(current);
     }
 
     private List<Card> makeDeck(Context current) {
@@ -39,15 +46,17 @@ public class Deck implements Parcelable{
 
         List<Card> newCards = new ArrayList<>();
 
-        for(int i = 0; i < 4; i++) {
+        for(int deckIndex = 0; deckIndex < numDecks; deckIndex++) {
+            for (int i = 0; i < 4; i++) {
 
-            for (int j = 1; j < 14; j++) {
+                for (int j = 1; j < 14; j++) {
 
-                Card nextCard = new Card(current, Suit.valueOf(i), CardNumber.valueOf(j));
-                newCards.add(nextCard);
+                    Card nextCard = new Card(current, Suit.valueOf(i), CardNumber.valueOf(j));
+                    newCards.add(nextCard);
+
+                }
 
             }
-
         }
 
         return newCards;
@@ -84,6 +93,12 @@ public class Deck implements Parcelable{
             cards.set(i, tempCard);
 
         }
+
+    }
+
+    public int getNumDecks() {
+
+        return this.numDecks;
 
     }
 

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+
 /**
  * Created by Marc on 3/11/2018.
  */
@@ -16,6 +18,8 @@ public class LearnNewDeck extends AppCompatActivity {
     private Deck deck;
     private ViewPager viewPager;
     private ImagePagerAdapter adapter;
+    private CardRecallPersistenceManager recallManager;
+    private int currentPosition;
 
     public static final String LEARNED_DECK = "com.example.marc.rememberme.feature.DECK";
 
@@ -26,6 +30,8 @@ public class LearnNewDeck extends AppCompatActivity {
         setContentView(R.layout.learn_new_deck);
         deck = new Deck(this);
         deck.shuffle();
+        recallManager = CardRecallPersistenceManager.getInstance(this);
+        recallManager.saveNewGame(deck);
         setCurrentPositionText(1, deck.getCards().size());
         initializePagerView(deck);
 
@@ -42,20 +48,23 @@ public class LearnNewDeck extends AppCompatActivity {
 
     private void setCurrentPositionText(int position, int numCards) {
 
-        String currentPosition = position + " / " + numCards;
+        currentPosition = position;
+        String currentPositionText = currentPosition + " / " + numCards;
         TextView textView = findViewById(R.id.currentPositionText);
-        textView.setText(currentPosition);
+        textView.setText(currentPositionText);
 
     }
 
     public void restartDeck(View view) {
 
         viewPager.setCurrentItem(0);
+        recallManager.updateGameState(false, "LEARNING", "RESTARTED", currentPosition, 0);
 
     }
 
     public void cancel(View view) {
 
+        recallManager.updateGameState(false, "LEARNING", "CANCELLED", currentPosition, 0);
         Intent intent = new Intent(this, MemorizeThings.class);
         startActivity(intent);
 
@@ -70,8 +79,6 @@ public class LearnNewDeck extends AppCompatActivity {
     }
 
     private class DetailOnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
-
-        private int currentPage;
 
         @Override
         public void onPageSelected(int position) {

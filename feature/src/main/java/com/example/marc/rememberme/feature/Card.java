@@ -11,7 +11,7 @@ import android.support.v4.content.ContextCompat;
  * Created by Marc on 2/27/2018.
  */
 
-class Card implements Parcelable {
+public class Card implements Parcelable {
 
     private Suit suit;
     private CardNumber cardNumber;
@@ -33,9 +33,33 @@ class Card implements Parcelable {
 
     }
 
+    public String getSuitAsString() {
+
+        return this.suit.toString();
+
+    }
+
+    public int getSuitAsInt() {
+
+        return this.suit.getValue();
+
+    }
+
     public CardNumber getCardNumber() {
 
         return this.cardNumber;
+
+    }
+
+    public String getCardNumberAsString() {
+
+        return this.cardNumber.toString();
+
+    }
+
+    public int getCardNumberAsInt() {
+
+        return this.cardNumber.getValue();
 
     }
 

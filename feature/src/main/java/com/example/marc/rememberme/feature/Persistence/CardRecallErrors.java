@@ -12,8 +12,8 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(
         tableName = "CARD_RECALL_ERRORS",
         foreignKeys = {
-                @ForeignKey(entity = GameHistory.class, parentColumns = {"SESSION_ID", "ATTEMPT_ID"}, childColumns = {"SESSION_ID", "ATTEMPT_ID"}),
-                @ForeignKey(entity = Decks.class, parentColumns = "DECK_ID", childColumns = "DECK_ID")
+                @ForeignKey(entity = GameSummary.class, parentColumns = {"SESSION_ID", "ATTEMPT_ID"}, childColumns = {"SESSION_ID", "ATTEMPT_ID"}),
+                @ForeignKey(entity = Decks.class, parentColumns = {"DECK_ID", "CARD_INDEX"}, childColumns = {"DECK_ID", "CARD_INDEX"})
             }
         )
 public class CardRecallErrors {

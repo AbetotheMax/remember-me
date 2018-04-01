@@ -3,6 +3,7 @@ package com.example.marc.rememberme.feature.Persistence;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 /**
  * Created by Marc on 3/29/2018.
@@ -12,12 +13,14 @@ import android.arch.persistence.room.PrimaryKey;
 public class Decks {
 
     @ColumnInfo(name = "DECK_ID")
+    @NonNull
     private int deckId;
 
     @ColumnInfo(name = "NUM_DECKS")
     private int numDecks;
 
     @ColumnInfo(name = "CARD_INDEX")
+    @NonNull
     private int cardIndex;
 
     @ColumnInfo(name = "CARD_NUMBER")

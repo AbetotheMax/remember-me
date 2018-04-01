@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+
 /**
  * Created by Marc on 3/26/2018.
  */
@@ -21,6 +23,7 @@ public class DeckRecallResults {
     public ImagePagerAdapter adapter;
     private View recallView;
     private static DeckRecallResults instance;
+    private CardRecallPersistenceManager recallManager;
 
     private DeckRecallResults(Deck recallDeck, Context context, ViewPager pager, View view) {
 
@@ -29,6 +32,7 @@ public class DeckRecallResults {
             this.recallView = view;
             this.context = context;
             this.recallPager = pager;
+            this.recallManager = CardRecallPersistenceManager.getInstance(context);
             workingRecallDeck = new Deck();
             initializePagerView(workingRecallDeck);
 
@@ -54,7 +58,7 @@ public class DeckRecallResults {
 
     }
 
-    public boolean isSelectionCorrect(Card selectedCard) {
+    public boolean isSelectionCorrect(Card selectedCard, long duration) {
 
         boolean cardsMatch = true;
 
@@ -63,6 +67,7 @@ public class DeckRecallResults {
             if(!selectedCard.equals(recallDeck.getCard(recallPosition))) {
 
                 cardsMatch = false;
+                recallManager.saveNewError(recallPosition, selectedCard.getCardNumberAsString(), selectedCard.getSuitAsString(), duration);
 
             }
 
@@ -77,7 +82,7 @@ public class DeckRecallResults {
 
     }
 
-    public void updateErrors() {
+    public void updateErrorCount() {
 
         errorCount++;
         TextView textView = (TextView) recallView.findViewById(R.id.errorCountText);
@@ -91,6 +96,12 @@ public class DeckRecallResults {
         TextView textView = (TextView) recallView.findViewById(R.id.currentPositionText);
         textView.setText(currentPositionText);
         return recallPosition;
+
+    }
+
+    public int getRecallPosition() {
+
+        return this.recallPosition;
 
     }
 

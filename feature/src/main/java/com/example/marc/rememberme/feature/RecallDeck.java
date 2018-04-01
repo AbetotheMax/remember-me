@@ -10,6 +10,8 @@ import android.widget.Chronometer;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
+import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ public class RecallDeck extends AppCompatActivity {
     Deck deckToRecall;
     private ViewPager pager;
     private Chronometer chronometer;
+    private CardRecallPersistenceManager recallManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,8 @@ public class RecallDeck extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         deckToRecall = bundle.getParcelable(LEARNED_DECK);
         pager = (ViewPager) findViewById(R.id.recallDeckPager);
-
+        recallManager = CardRecallPersistenceManager.getInstance(this);
+        recallManager.updateGameState(false, "RECALL", "STARTED", 0, 0);
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         expandableListDetail = CardSuitsExpandableListDataPump.getData(this);
@@ -64,6 +68,9 @@ public class RecallDeck extends AppCompatActivity {
     public void cancel(View view) {
 
         chronometer.stop();
+        DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content));
+        recallManager.updateGameState(false, "RECALL", "CANCELLED", results.getRecallPosition(), chronometer.getBase());
+
 
     }
 

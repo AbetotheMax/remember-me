@@ -2,38 +2,27 @@ package com.example.marc.rememberme.feature.Persistence;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
 /**
- * Created by Marc on 3/29/2018.
+ * Created by Marc on 4/1/2018.
  */
 
-@Entity(
-        tableName = "GAME_HISTORY",
-        foreignKeys = {
-                @ForeignKey(
-                        entity = GameSummary.class,
-                        parentColumns = {"SESSION_ID", "ATTEMPT_ID"},
-                        childColumns = {"SESSION_ID", "ATTEMPT_ID"}
-                ),
-                @ForeignKey(
-                        entity = GameStates.class,
-                        parentColumns = {"GAME_DESC", "STATE", "STATUS"},
-                        childColumns = {"GAME_DESC", "GAME_STATE", "GAME_STATE_STATUS"}
-                )
-        }
-)
+@Entity(tableName = "GAME_SUMMARY", primaryKeys = {"SESSION_ID", "ATTEMPT_ID"})
 @TypeConverters(Converters.class)
-public class GameHistory {
+
+public class GameSummary {
 
     @ColumnInfo(name = "SESSION_ID")
+    @NonNull
     private int sessionId;
 
     @ColumnInfo(name = "ATTEMPT_ID")
+    @NonNull
     private int attemptId;
 
     @ColumnInfo(name = "COMPONENT_INSTANCE_ID")
@@ -57,7 +46,7 @@ public class GameHistory {
     @ColumnInfo(name = "CUMULATIVE_STATE_DURATION")
     private long cumulativeStateDuration;
 
-    @PrimaryKey @ColumnInfo(name = "LAST_MOD_DATE_TIME")
+    @ColumnInfo(name = "LAST_MOD_DATE_TIME")
     private Date lastModDateTime;
 
     public void setSessionId(int id) {
@@ -136,22 +125,5 @@ public class GameHistory {
         return this.lastModDateTime;
     }
 
-    public GameSummary convertToGameSummary() {
-
-        GameSummary summary = new GameSummary();
-        summary.setSessionId(sessionId);
-        summary.setAttemptId(attemptId);
-        summary.setComponentInstanceId(componentInstanceId);
-        summary.setGameDesc(gameDesc);
-        summary.setGameState(gameState);
-        summary.setGameStateStatus(gameStateStatus);
-        summary.setLastPosition(lastPosition);
-        summary.setErrors(errors);
-        summary.setCumulativeStateDuration(cumulativeStateDuration);
-        summary.setLastModDateTime(lastModDateTime);
-
-        return summary;
-
-    }
 
 }

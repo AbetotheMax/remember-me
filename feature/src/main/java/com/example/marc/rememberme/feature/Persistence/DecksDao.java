@@ -14,7 +14,16 @@ import java.util.List;
 public interface DecksDao {
 
     @Query("SELECT * FROM DECKS WHERE DECK_ID = :deckId")
-    List<Decks> loadAllCardsFromDeck(int deckId);
+    public List<Decks> loadAllCardsFromDeck(int deckId);
+
+    @Query("SELECT CARD_NUMBER FROM DECKS WHERE DECK_ID = :deckId AND CARD_INDEX = :cardIndex")
+    public String getCardnumber(int deckId, int cardIndex);
+
+    @Query("SELECT CARD_SUIT FROM DECKS WHERE DECK_ID = :deckId AND CARD_INDEX = :cardIndex")
+    public String getCardSuit(int deckId, int cardIndex);
+
+    @Query("SELECT MAX(DECK_ID) FROM DECKS")
+    public int getMaxDeckId();
 
     @Insert
     public void insertDeck(Decks decks);

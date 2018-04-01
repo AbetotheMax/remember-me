@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
     private View recallView;
     private final List<Card> items;
     private DeckRecallResults results;
+    private CardRecallPersistenceManager recallManager;
 
 
     public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager, View view) {
@@ -32,6 +35,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
         this.items = items;
         this.results = DeckRecallResults.getInstance(recallDeck, context, pager, view);
         this.recallView = view;
+        this.recallManager = CardRecallPersistenceManager.getInstance(context);
 
     }
 
@@ -57,17 +61,20 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
         holder.expandedListImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!results.isSelectionCorrect(expandedListCard)) {
 
-                    results.updateErrors();
+                Chronometer chronometer = recallView.findViewById(R.id.recallChronometer);
+
+                if(!results.isSelectionCorrect(expandedListCard, chronometer.getBase())) {
+
+                    results.updateErrorCount();
 
                 }
 
                 results.updateProgress();
                 if(results.atEndOfRecallDeck()) {
 
-                    Chronometer chronometer = recallView.findViewById(R.id.recallChronometer);
                     chronometer.stop();
+                    recallManager.updateGameState(false, "RECALL", "COMPLETED", results.getRecallPosition(), chronometer.getBase());
 
                 }
             }

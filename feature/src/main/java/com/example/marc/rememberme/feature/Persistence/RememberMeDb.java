@@ -14,9 +14,12 @@ import android.content.Context;
 
 @Database(
         entities = {
+                GameSummary.class,
                 GameHistory.class,
                 Decks.class,
-                CardRecallErrors.class
+                CardRecallErrors.class,
+                Games.class,
+                GameStates.class
         },
         version = 1
 )
@@ -36,6 +39,7 @@ public abstract class RememberMeDb extends RoomDatabase{
 
         abstract public CardRecallErrorsDao cardRecallErrorsDao();
         abstract public DecksDao decksDao();
+        abstract public GameSummaryDao gameSummaryDao();
         abstract public GameHistoryDao gameHistoryDao();
 
         static RoomDatabase.Callback callback = new RoomDatabase.Callback() {

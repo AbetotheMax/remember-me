@@ -2,6 +2,7 @@ package com.example.marc.rememberme.feature.Persistence;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.security.PrivilegedAction;
@@ -10,7 +11,7 @@ import java.security.PrivilegedAction;
  * Created by Marc on 3/28/2018.
  */
 
-@Entity(tableName = "GAMES")
+@Entity(tableName = "GAMES", indices = {@Index(name = "INDX_GAME_DESC", unique = true, value = "GAME_DESC")})
 public class Games {
 
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "GAME_ID")
