@@ -26,7 +26,7 @@ public class Deck implements Parcelable{
 
     public Deck(Context current) {
 
-        new Deck(current, 1);
+        this(current, 1);
 
     }
 

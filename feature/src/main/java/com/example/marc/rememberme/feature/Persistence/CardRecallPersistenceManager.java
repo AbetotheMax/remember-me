@@ -1,11 +1,20 @@
 package com.example.marc.rememberme.feature.Persistence;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.marc.rememberme.feature.Deck;
 import com.example.marc.rememberme.feature.Card;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by Marc on 4/1/2018.
@@ -15,6 +24,7 @@ public class CardRecallPersistenceManager {
 
     private static CardRecallPersistenceManager instance;
     private RememberMeDb db;
+    private ExecutorService executor;
     private int deckId;
     private int numDecks;
     private GameHistory lastGameHistoryRecord;
@@ -38,8 +48,13 @@ public class CardRecallPersistenceManager {
     }
 
     public void saveNewGame(Deck deck) {
-
-        deckId = db.decksDao().getMaxDeckId() + 1;
+        int maxDeckId = getMaxDeckId();
+        if(maxDeckId != 0) {
+            deckId = maxDeckId;
+            deckId += 1;
+        } else {
+            deckId = 1;
+        }
         numDecks = deck.getNumDecks();
 
         Decks decksRecord = new Decks();
@@ -51,12 +66,18 @@ public class CardRecallPersistenceManager {
             decksRecord.setCardIndex(i);
             decksRecord.setCardNumber(deck.getCard(i).getCardNumberAsString());
             decksRecord.setCardSuit(deck.getCard(i).getSuitAsString());
-            db.decksDao().insertDeck(decksRecord);
+            insertDeck(decksRecord);
 
         }
 
         lastGameHistoryRecord = new GameHistory();
-        int sessionId = db.gameHistoryDao().getMaxSessionId("CARD RECALL") + 1;
+        int maxSessionId = getMaxSessionId();
+        int sessionId;
+        if(maxSessionId != 0) {
+            sessionId = maxSessionId + 1;
+        } else {
+            sessionId = 1;
+        }
 
         lastGameHistoryRecord.setSessionId(sessionId);
         lastGameHistoryRecord.setAttemptId(1);
@@ -69,8 +90,7 @@ public class CardRecallPersistenceManager {
         lastGameHistoryRecord.setCumulativeStateDuration(0);
         lastGameHistoryRecord.setLastModDateTime(new Date());
 
-        db.gameSummaryDao().insertGameSummary(lastGameHistoryRecord.convertToGameSummary());
-        db.gameHistoryDao().insertGameState(lastGameHistoryRecord);
+        insertGameHistoryRecord(lastGameHistoryRecord);
 
     }
 
@@ -89,16 +109,7 @@ public class CardRecallPersistenceManager {
         lastGameHistoryRecord.setCumulativeStateDuration(duration);
         lastGameHistoryRecord.setLastModDateTime(new Date());
 
-        db.gameHistoryDao().insertGameState(lastGameHistoryRecord);
-
-        GameSummary summary = lastGameHistoryRecord.convertToGameSummary();
-        summary.setCumulativeStateDuration(summary.getCumulativeStateDuration() +
-                db.gameSummaryDao()
-                        .getGameSummary(summary.getSessionId(), summary.getAttemptId())
-                        .getCumulativeStateDuration()
-        );
-
-        db.gameSummaryDao().updateGameSummary(summary);
+        updateGameState(lastGameHistoryRecord);
 
     }
 
@@ -109,12 +120,12 @@ public class CardRecallPersistenceManager {
         recallError.setAttemptId(lastGameHistoryRecord.getAttemptId());
         recallError.setDeckId(deckId);
         recallError.setCardIndex(cardIndex);
-        recallError.setCardNumber(db.decksDao().getCardnumber(deckId, cardIndex));
-        recallError.setCardSuit(db.decksDao().getCardSuit(deckId, cardIndex));
+        recallError.setCardNumber(getCardNumber(cardIndex));
+        recallError.setCardSuit(getCardSuit(cardIndex));
         recallError.setCardNumberGuessed(cardNumberGuessed);
         recallError.setCardSuitGuessed(cardSuitGuessed);
 
-        db.cardRecallErrorsDao().insertCardRecallError(recallError);
+        insertCardRecallError(recallError);
 
         if(!lastGameHistoryRecord.getErrors()) {
 
@@ -141,6 +152,144 @@ public class CardRecallPersistenceManager {
 
         return this.lastGameHistoryRecord;
 
+    }
+
+    private int getMaxDeckId() {
+        int deckId = 0;
+        executor = Executors.newSingleThreadExecutor();
+        Future<Integer> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.decksDao().getMaxDeckId();
+            }
+        });
+        try {
+            deckId = (Integer) future.get();
+            return deckId;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error getting max deck id: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error getting max deck id: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return deckId;
+    }
+
+    private void insertDeck(final Decks decks) {
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                db.decksDao().insertDeck(decks);
+            }
+        });
+        executor.shutdown();
+    }
+
+    private int getMaxSessionId() {
+        int maxSessionId = 0;
+        executor = Executors.newSingleThreadExecutor();
+        Future<Integer> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameHistoryDao().getMaxSessionId("CARD RECALL");
+            }
+        });
+        try {
+            maxSessionId  = (Integer) future.get();
+            return maxSessionId ;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error getting max session id: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error getting max session id: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return maxSessionId ;
+    }
+
+    private void insertGameHistoryRecord(final GameHistory gh) {
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                db.gameSummaryDao().insertGameSummary(gh.convertToGameSummary());
+                db.gameHistoryDao().insertGameState(gh);
+            }
+        });
+        executor.shutdown();
+    }
+
+    private void updateGameState(final GameHistory gh) {
+
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                db.gameHistoryDao().insertGameState(gh);
+
+                GameSummary summary = gh.convertToGameSummary();
+                summary.setCumulativeStateDuration(summary.getCumulativeStateDuration() +
+                        db.gameSummaryDao()
+                                .getGameSummary(summary.getSessionId(), summary.getAttemptId())
+                                .getCumulativeStateDuration()
+                );
+
+                db.gameSummaryDao().updateGameSummary(summary);
+
+            }
+        });
+        executor.shutdown();
+    }
+
+    private String getCardNumber(final int cardIndex) {
+        String cardNumber = "";
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.decksDao().getCardnumber(deckId, cardIndex);
+            }
+        });
+        try {
+            cardNumber  = (String) future.get();
+            return cardNumber;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error getting card number for card index " + cardIndex + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error getting card number for card index " + cardIndex + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return cardNumber;
+    }
+
+    private String getCardSuit(final int cardIndex) {
+        String suit = "";
+        executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.decksDao().getCardSuit(deckId, cardIndex);
+            }
+        });
+        try {
+            suit = (String) future.get();
+            return suit;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error getting card suit for card index " + cardIndex + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error getting card suit for card index " + cardIndex + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return suit;
+
+    }
+
+    private void insertCardRecallError( final CardRecallErrors recallError) {
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                db.cardRecallErrorsDao().insertCardRecallError(recallError);
+            }
+        });
+        executor.shutdown();
     }
 
 }
