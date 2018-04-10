@@ -27,6 +27,9 @@ public interface DecksDao {
     public int getMaxDeckId();
 
     @Insert
-    public void insertDeck(Decks decks);
+    public void insertDeckRecord(Decks decks);
+
+    @Insert
+    public void insertDeck(List<Decks> decks);
 
 }

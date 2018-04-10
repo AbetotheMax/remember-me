@@ -16,6 +16,10 @@ public interface GameSummaryDao {
     @Query("SELECT * FROM GAME_SUMMARY WHERE SESSION_ID = :sessionId AND ATTEMPT_ID = :attemptId")
     public GameSummary getGameSummary(int sessionId, int attemptId);
 
+    @Query("SELECT MAX(SESSION_ID) FROM GAME_SUMMARY WHERE GAME_DESC = :gameDesc")
+    public int getMaxSessionId(String gameDesc);
+
+
     @Insert
     public void insertGameSummary(GameSummary gameSummary);
 

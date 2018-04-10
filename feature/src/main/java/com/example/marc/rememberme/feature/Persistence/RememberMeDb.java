@@ -71,76 +71,77 @@ public abstract class RememberMeDb extends RoomDatabase{
                         ")";
 
                 db.execSQL(CREATE_GAME_STATES_TABLE);
+                db.execSQL("DELETE FROM GAME_STATES");
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "STARTED");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "STARTED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "IN PROGRESS");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "IN PROGRESS");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "RESTARTED");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "RESTARTED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "RESUMED");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "RESUMED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "CANCELLED");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "CANCELLED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "LEARNING");
-                contentValues.put("STATE", "COMPLETED");
+                contentValues.put("STATE", "LEARNING");
+                contentValues.put("STATUS", "COMPLETED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "STARTED");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "STARTED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "IN PROGRESS");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "IN PROGRESS");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "RESTARTED");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "RESTARTED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "RESUMED");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "RESUMED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "CANCELLED");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "CANCELLED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
                 contentValues.clear();
                 contentValues.put("GAME_DESC", "CARD RECALL");
-                contentValues.put("STATUS", "RECALL");
-                contentValues.put("STATE", "COMPLETED");
+                contentValues.put("STATE", "RECALL");
+                contentValues.put("STATUS", "COMPLETED");
                 db.insert("GAME_STATES", OnConflictStrategy.ABORT, contentValues);
 
 

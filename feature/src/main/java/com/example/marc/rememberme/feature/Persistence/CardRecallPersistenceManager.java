@@ -8,7 +8,9 @@ import android.util.Log;
 import com.example.marc.rememberme.feature.Deck;
 import com.example.marc.rememberme.feature.Card;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -57,19 +59,19 @@ public class CardRecallPersistenceManager {
         }
         numDecks = deck.getNumDecks();
 
-        Decks decksRecord = new Decks();
-
+        List<Decks> completeDeck = new ArrayList<>();
         for(int i = 0; i < deck.getCards().size(); i++) {
 
+            Decks decksRecord = new Decks();
             decksRecord.setDeckId(deckId);
             decksRecord.setNumDecks(numDecks);
             decksRecord.setCardIndex(i);
             decksRecord.setCardNumber(deck.getCard(i).getCardNumberAsString());
             decksRecord.setCardSuit(deck.getCard(i).getSuitAsString());
-            insertDeck(decksRecord);
+            completeDeck.add(decksRecord);
 
         }
-
+        insertDeck(completeDeck);
         lastGameHistoryRecord = new GameHistory();
         int maxSessionId = getMaxSessionId();
         int sessionId;
@@ -175,11 +177,15 @@ public class CardRecallPersistenceManager {
         return deckId;
     }
 
-    private void insertDeck(final Decks decks) {
+    private void insertDeck(final List<Decks> decks) {
         executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
             public void run() {
-                db.decksDao().insertDeck(decks);
+                try {
+                    db.decksDao().insertDeck(decks);
+                } catch (Exception e) {
+                    Log.e("Error", "Error inserting deck.  Exception: " + e);
+                }
             }
         });
         executor.shutdown();
@@ -190,7 +196,7 @@ public class CardRecallPersistenceManager {
         executor = Executors.newSingleThreadExecutor();
         Future<Integer> future = executor.submit(new Callable() {
             public Object call() {
-                return  db.gameHistoryDao().getMaxSessionId("CARD RECALL");
+                return  db.gameSummaryDao().getMaxSessionId("CARD RECALL");
             }
         });
         try {
