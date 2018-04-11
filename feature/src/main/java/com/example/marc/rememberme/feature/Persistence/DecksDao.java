@@ -18,7 +18,7 @@ public interface DecksDao {
     public List<Decks> loadAllCardsFromDeck(int deckId);
 
     @Query("SELECT CARD_NUMBER FROM DECKS WHERE DECK_ID = :deckId AND CARD_INDEX = :cardIndex")
-    public String getCardnumber(int deckId, int cardIndex);
+    public String getCardNumber(int deckId, int cardIndex);
 
     @Query("SELECT CARD_SUIT FROM DECKS WHERE DECK_ID = :deckId AND CARD_INDEX = :cardIndex")
     public String getCardSuit(int deckId, int cardIndex);

@@ -9,9 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+import com.example.marc.rememberme.feature.Persistence.GameHistory;
 import com.example.marc.rememberme.feature.Persistence.GameStates;
 import com.example.marc.rememberme.feature.Persistence.GameSummary;
 import com.example.marc.rememberme.feature.Persistence.RememberMeDb;
+
+import java.util.Date;
 
 /**
  * Created by Marc on 3/11/2018.
@@ -27,6 +30,7 @@ public class LearnNewDeck extends AppCompatActivity {
     // for debugging
     private RememberMeDb db;
     private int maxDeckId;
+    private GameHistory lastGameHistoryRecord;
 
     public static final String LEARNED_DECK = "com.example.marc.rememberme.feature.DECK";
 
@@ -38,12 +42,12 @@ public class LearnNewDeck extends AppCompatActivity {
         deck = new Deck(this);
         deck.shuffle();
         recallManager = CardRecallPersistenceManager.getInstance(this);
-        recallManager.saveNewGame(deck);
+        lastGameHistoryRecord = recallManager.saveNewGame(deck);
         // begin debugging
-        maxDeckId = recallManager.getDeckId();
+        maxDeckId = recallManager.getMaxDeckId();
         Log.d("DEBUG", "Deck id = " + maxDeckId);
-        Log.d("DEBUG", "First card number = " + db.decksDao().getCardnumber(maxDeckId, 0));
-        Log.d("DEBUG", "First card suit = " + db.decksDao().getCardSuit(maxDeckId, 0));
+        Log.d("DEBUG", "First card number = " + recallManager.getCardNumber(maxDeckId, 0));
+        Log.d("DEBUG", "First card suit = " + recallManager.getCardSuit(maxDeckId, 0));
         //end debugging
         setCurrentPositionText(1, deck.getCards().size());
         initializePagerView(deck);
@@ -71,17 +75,26 @@ public class LearnNewDeck extends AppCompatActivity {
     public void restartDeck(View view) {
 
         viewPager.setCurrentItem(0);
-        recallManager.updateGameState(false, "LEARNING", "RESTARTED", currentPosition, 0);
-        GameSummary gs = db.gameSummaryDao().getGameSummary(db.gameHistoryDao().getMaxSessionId("CARD RECALL"), 1);
-        //Log.d("DEBUG", "Session id = " + gs.getSessionId() + "; Game State = " + gs.getGameState() + "; game state status = " + gs.getGameStateStatus() +
-          //  "; errors")
-        Log.d("DEBUG", "In restartDeck.  Game summary = " + gs);
-
+        lastGameHistoryRecord.setGameState("LEARNING");
+        lastGameHistoryRecord.setGameStateStatus("RESTARTED");
+        lastGameHistoryRecord.setLastPosition(currentPosition);
+        // TODO: Add logic to update duration.  Setting to 0 here as a placeholder
+        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        lastGameHistoryRecord.setLastModDateTime(new Date());
+        recallManager.updateGameState(lastGameHistoryRecord);
+        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+        Log.d("DEBUG", "Session id = " + gs.getSessionId() + "; Game State = " + gs.getGameState() + "; game state status = " + gs.getGameStateStatus() +
+            "; errors");
     }
 
     public void cancel(View view) {
-
-        recallManager.updateGameState(false, "LEARNING", "CANCELLED", currentPosition, 0);
+        lastGameHistoryRecord.setGameState("LEARNING");
+        lastGameHistoryRecord.setGameStateStatus("CANCELLED");
+        lastGameHistoryRecord.setLastPosition(currentPosition);
+        // TODO: Add logic to update duration.  Setting to 0 here as a placeholder
+        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        lastGameHistoryRecord.setLastModDateTime(new Date());
+        recallManager.updateGameState(lastGameHistoryRecord);
         Intent intent = new Intent(this, MemorizeThings.class);
         startActivity(intent);
         GameSummary gs = db.gameSummaryDao().getGameSummary(db.gameHistoryDao().getMaxSessionId("CARD RECALL"), 1);

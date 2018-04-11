@@ -43,7 +43,8 @@ public class RecallDeck extends AppCompatActivity {
         deckToRecall = bundle.getParcelable(LEARNED_DECK);
         pager = (ViewPager) findViewById(R.id.recallDeckPager);
         recallManager = CardRecallPersistenceManager.getInstance(this);
-        recallManager.updateGameState(false, "RECALL", "STARTED", 0, 0);
+        //TODO: Need to pass a game state object or overload this method
+        //recallManager.updateGameState(false, "RECALL", "STARTED", 0, 0);
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         expandableListDetail = CardSuitsExpandableListDataPump.getData(this);
@@ -69,7 +70,8 @@ public class RecallDeck extends AppCompatActivity {
 
         chronometer.stop();
         DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content));
-        recallManager.updateGameState(false, "RECALL", "CANCELLED", results.getRecallPosition(), chronometer.getBase());
+        //TODO: Need to pass a game state object or overload this method
+        //recallManager.updateGameState(false, "RECALL", "CANCELLED", results.getRecallPosition(), chronometer.getBase());
 
 
     }

@@ -67,7 +67,7 @@ public class DeckRecallResults {
             if(!selectedCard.equals(recallDeck.getCard(recallPosition))) {
 
                 cardsMatch = false;
-                recallManager.saveNewError(recallPosition, selectedCard.getCardNumberAsString(), selectedCard.getSuitAsString(), duration);
+                recallManager.saveNewError(recallDeck, recallPosition, selectedCard.getCardNumberAsString(), selectedCard.getSuitAsString(), duration);
 
             }
 

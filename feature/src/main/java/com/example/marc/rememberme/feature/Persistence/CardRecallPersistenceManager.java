@@ -27,9 +27,6 @@ public class CardRecallPersistenceManager {
     private static CardRecallPersistenceManager instance;
     private RememberMeDb db;
     private ExecutorService executor;
-    private int deckId;
-    private int numDecks;
-    private GameHistory lastGameHistoryRecord;
 
     private CardRecallPersistenceManager(Context context) {
 
@@ -49,7 +46,9 @@ public class CardRecallPersistenceManager {
 
     }
 
-    public void saveNewGame(Deck deck) {
+    public GameHistory saveNewGame(Deck deck) {
+        int deckId;
+        int numDecks;
         int maxDeckId = getMaxDeckId();
         if(maxDeckId != 0) {
             deckId = maxDeckId;
@@ -72,7 +71,8 @@ public class CardRecallPersistenceManager {
 
         }
         insertDeck(completeDeck);
-        lastGameHistoryRecord = new GameHistory();
+
+        GameHistory lastGameHistoryRecord = new GameHistory();
         int maxSessionId = getMaxSessionId();
         int sessionId;
         if(maxSessionId != 0) {
@@ -94,36 +94,23 @@ public class CardRecallPersistenceManager {
 
         insertGameHistoryRecord(lastGameHistoryRecord);
 
-    }
-
-    public void updateGameState(boolean newAttempt, String gameState, String gameStateStatus, int lastPosition, long duration) {
-
-        if(newAttempt) {
-
-            lastGameHistoryRecord.setAttemptId(lastGameHistoryRecord.getAttemptId() + 1);
-            lastGameHistoryRecord.setErrors(false);
-
-        }
-
-        lastGameHistoryRecord.setGameState(gameState);
-        lastGameHistoryRecord.setGameStateStatus(gameStateStatus);
-        lastGameHistoryRecord.setLastPosition(lastPosition);
-        lastGameHistoryRecord.setCumulativeStateDuration(duration);
-        lastGameHistoryRecord.setLastModDateTime(new Date());
-
-        updateGameState(lastGameHistoryRecord);
+        return lastGameHistoryRecord;
 
     }
 
-    public void saveNewError(int cardIndex, String cardNumberGuessed, String cardSuitGuessed, long duration) {
+    public void saveNewError(Deck deck, int cardIndex, String cardNumberGuessed, String cardSuitGuessed, long duration) {}
+
+    public void saveNewError(GameHistory lastGameHistoryRecord, int cardIndex, String cardNumberGuessed, String cardSuitGuessed, long duration) {
+
+        int deckId = lastGameHistoryRecord.getComponentInstanceId();
 
         CardRecallErrors recallError = new CardRecallErrors();
         recallError.setSessionId(lastGameHistoryRecord.getSessionId());
         recallError.setAttemptId(lastGameHistoryRecord.getAttemptId());
         recallError.setDeckId(deckId);
         recallError.setCardIndex(cardIndex);
-        recallError.setCardNumber(getCardNumber(cardIndex));
-        recallError.setCardSuit(getCardSuit(cardIndex));
+        recallError.setCardNumber(getCardNumber(deckId, cardIndex));
+        recallError.setCardSuit(getCardSuit(deckId, cardIndex));
         recallError.setCardNumberGuessed(cardNumberGuessed);
         recallError.setCardSuitGuessed(cardSuitGuessed);
 
@@ -132,31 +119,13 @@ public class CardRecallPersistenceManager {
         if(!lastGameHistoryRecord.getErrors()) {
 
             lastGameHistoryRecord.setErrors(true);
-            updateGameState(false, lastGameHistoryRecord.getGameState(), lastGameHistoryRecord.getGameStateStatus(), cardIndex, duration);
+            updateGameState(lastGameHistoryRecord);
 
         }
 
     }
 
-    public int getDeckId() {
-
-        return this.deckId;
-
-    }
-
-    public int getNumDecks() {
-
-        return this.numDecks;
-
-    }
-
-    public GameHistory getLastGameHistoryRecord() {
-
-        return this.lastGameHistoryRecord;
-
-    }
-
-    private int getMaxDeckId() {
+    public int getMaxDeckId() {
         int deckId = 0;
         executor = Executors.newSingleThreadExecutor();
         Future<Integer> future = executor.submit(new Callable() {
@@ -191,7 +160,7 @@ public class CardRecallPersistenceManager {
         executor.shutdown();
     }
 
-    private int getMaxSessionId() {
+    public int getMaxSessionId() {
         int maxSessionId = 0;
         executor = Executors.newSingleThreadExecutor();
         Future<Integer> future = executor.submit(new Callable() {
@@ -223,7 +192,7 @@ public class CardRecallPersistenceManager {
         executor.shutdown();
     }
 
-    private void updateGameState(final GameHistory gh) {
+    public void updateGameState(final GameHistory gh) {
 
         executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
@@ -244,13 +213,35 @@ public class CardRecallPersistenceManager {
         executor.shutdown();
     }
 
-    private String getCardNumber(final int cardIndex) {
+    public GameSummary getGameSummary(final int sessionId, final int attemptId) {
+        GameSummary gs = new GameSummary();
+        executor = Executors.newSingleThreadExecutor();
+        Future<GameSummary> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().getGameSummary(sessionId, attemptId);
+            }
+        });
+        try {
+            gs  = (GameSummary) future.get();
+            return gs;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error getting game summary for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error getting card number for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+
+        return gs;
+    }
+
+    public String getCardNumber(final int deckId, final int cardIndex) {
         String cardNumber = "";
 
         executor = Executors.newSingleThreadExecutor();
         Future<String> future = executor.submit(new Callable() {
             public Object call() {
-                return  db.decksDao().getCardnumber(deckId, cardIndex);
+                return  db.decksDao().getCardNumber(deckId, cardIndex);
             }
         });
         try {
@@ -266,7 +257,7 @@ public class CardRecallPersistenceManager {
         return cardNumber;
     }
 
-    private String getCardSuit(final int cardIndex) {
+    public String getCardSuit(final int deckId, final int cardIndex) {
         String suit = "";
         executor = Executors.newSingleThreadExecutor();
         Future<String> future = executor.submit(new Callable() {

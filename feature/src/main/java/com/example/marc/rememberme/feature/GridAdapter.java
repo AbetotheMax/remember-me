@@ -74,7 +74,8 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
                 if(results.atEndOfRecallDeck()) {
 
                     chronometer.stop();
-                    recallManager.updateGameState(false, "RECALL", "COMPLETED", results.getRecallPosition(), chronometer.getBase());
+                    // TODO: Need to pass a game state object or loverload this method
+                    //recallManager.updateGameState(false, "RECALL", "COMPLETED", results.getRecallPosition(), chronometer.getBase());
 
                 }
             }
