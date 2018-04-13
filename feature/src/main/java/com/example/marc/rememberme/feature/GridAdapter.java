@@ -3,6 +3,7 @@ package com.example.marc.rememberme.feature;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+import com.example.marc.rememberme.feature.Persistence.GameHistory;
+import com.example.marc.rememberme.feature.Persistence.GameSummary;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,15 +31,17 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
     private final List<Card> items;
     private DeckRecallResults results;
     private CardRecallPersistenceManager recallManager;
+    private GameHistory lastGameHistoryRecord;
 
 
-    public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager, View view) {
+    public GridAdapter(Context context, List<Card> items, Deck recallDeck, ViewPager pager, View view, GameHistory lastGameHistoryRecord) {
 
         this.context = context;
         this.items = items;
-        this.results = DeckRecallResults.getInstance(recallDeck, context, pager, view);
+        this.results = DeckRecallResults.getInstance(recallDeck, context, pager, view, lastGameHistoryRecord);
         this.recallView = view;
         this.recallManager = CardRecallPersistenceManager.getInstance(context);
+        this.lastGameHistoryRecord = lastGameHistoryRecord;
 
     }
 
@@ -74,8 +80,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
                 if(results.atEndOfRecallDeck()) {
 
                     chronometer.stop();
-                    // TODO: Need to pass a game state object or loverload this method
-                    //recallManager.updateGameState(false, "RECALL", "COMPLETED", results.getRecallPosition(), chronometer.getBase());
+                    lastGameHistoryRecord.setGameState("RECALL");
+                    lastGameHistoryRecord.setGameStateStatus("COMPLETED");
+                    lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
+                    lastGameHistoryRecord.setCumulativeStateDuration(chronometer.getBase());
+                    lastGameHistoryRecord.setLastModDateTime(new Date());
+                    recallManager.updateGameState(lastGameHistoryRecord);
+                    GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+                    Log.d("DEBUG", "Completed Recall.  GameState = " + gs);
 
                 }
             }

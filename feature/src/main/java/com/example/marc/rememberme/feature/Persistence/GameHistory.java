@@ -5,7 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
-
+import android.os.Parcel;
+import android.os.Parcelable;
 import java.util.Date;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Date;
         }
 )
 @TypeConverters(Converters.class)
-public class GameHistory {
+public class GameHistory implements Parcelable{
 
     @ColumnInfo(name = "SESSION_ID")
     private int sessionId;
@@ -59,6 +60,8 @@ public class GameHistory {
 
     @PrimaryKey @ColumnInfo(name = "LAST_MOD_DATE_TIME")
     private Date lastModDateTime;
+
+    public GameHistory() {};
 
     public void setSessionId(int id) {
         this.sessionId = id;
@@ -153,5 +156,59 @@ public class GameHistory {
         return summary;
 
     }
+
+    public GameHistory(Parcel in) {
+
+        setSessionId(in.readInt());
+        setAttemptId(in.readInt());
+        setComponentInstanceId(in.readInt());
+        setGameDesc(in.readString());
+        setGameState(in.readString());
+        setGameStateStatus(in.readString());
+        setLastPosition(in.readInt());
+        setErrors(in.readInt() != 0);
+        setCumulativeStateDuration(in.readLong());
+        setLastModDateTime(new Date(in.readLong()));
+    }
+
+    @Override
+
+    public int describeContents() {
+
+        return 0;
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeInt(getSessionId());
+        dest.writeInt(getAttemptId());
+        dest.writeInt(getComponentInstanceId());
+        dest.writeString(getGameDesc());
+        dest.writeString(getGameState());
+        dest.writeString(getGameStateStatus());
+        dest.writeInt(getLastPosition());
+        dest.writeInt(getErrors() ? 1 : 0);
+        dest.writeLong(getCumulativeStateDuration());
+        dest.writeLong(getLastModDateTime().getTime());
+
+    }
+
+    public static final Parcelable.Creator<GameHistory> CREATOR = new Parcelable.Creator<GameHistory>() {
+
+        public GameHistory createFromParcel(Parcel in) {
+
+            return new GameHistory(in);
+
+        }
+
+        public GameHistory[] newArray(int size) {
+
+            return new GameHistory[size];
+
+        }
+
+    };
 
 }

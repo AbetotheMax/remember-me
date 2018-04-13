@@ -33,6 +33,7 @@ public class LearnNewDeck extends AppCompatActivity {
     private GameHistory lastGameHistoryRecord;
 
     public static final String LEARNED_DECK = "com.example.marc.rememberme.feature.DECK";
+    public static final String LAST_GAME_HISTORY = "com.example.marc.rememberme.feature.Persistence.GAMEHISTORY";
 
     @Override
     protected void onCreate(Bundle savedInstanceBundle) {
@@ -106,6 +107,7 @@ public class LearnNewDeck extends AppCompatActivity {
 
         Intent intent = new Intent(this, RecallDeck.class);
         intent.putExtra(LEARNED_DECK, deck);
+        intent.putExtra(LAST_GAME_HISTORY, lastGameHistoryRecord);
         startActivity(intent);
 
     }

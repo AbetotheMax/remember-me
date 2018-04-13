@@ -2,10 +2,16 @@ package com.example.marc.rememberme.feature;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.marc.rememberme.feature.Persistence.CardRecallErrors;
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+import com.example.marc.rememberme.feature.Persistence.GameHistory;
+import com.example.marc.rememberme.feature.Persistence.GameSummary;
+
+import java.util.Date;
 
 /**
  * Created by Marc on 3/26/2018.
@@ -24,8 +30,9 @@ public class DeckRecallResults {
     private View recallView;
     private static DeckRecallResults instance;
     private CardRecallPersistenceManager recallManager;
+    private GameHistory lastGameHistoryRecord;
 
-    private DeckRecallResults(Deck recallDeck, Context context, ViewPager pager, View view) {
+    private DeckRecallResults(Deck recallDeck, Context context, ViewPager pager, View view, GameHistory lastGameHistoryRecord) {
 
             this.recallDeck = recallDeck;
             this.numCards = recallDeck.getCards().size();
@@ -33,16 +40,17 @@ public class DeckRecallResults {
             this.context = context;
             this.recallPager = pager;
             this.recallManager = CardRecallPersistenceManager.getInstance(context);
+            this.lastGameHistoryRecord = lastGameHistoryRecord;
             workingRecallDeck = new Deck();
             initializePagerView(workingRecallDeck);
 
     }
 
-    public static DeckRecallResults getInstance(Deck recallDeck, Context context, ViewPager pager, View view) {
+    public static DeckRecallResults getInstance(Deck recallDeck, Context context, ViewPager pager, View view, GameHistory lastGameHistoryRecord) {
 
         if (instance == null || !instance.recallDeck.getCards().equals(recallDeck.getCards())) {
 
-            instance = new DeckRecallResults(recallDeck, context, pager, view);
+            instance = new DeckRecallResults(recallDeck, context, pager, view, lastGameHistoryRecord);
 
         }
 
@@ -67,7 +75,13 @@ public class DeckRecallResults {
             if(!selectedCard.equals(recallDeck.getCard(recallPosition))) {
 
                 cardsMatch = false;
-                recallManager.saveNewError(recallDeck, recallPosition, selectedCard.getCardNumberAsString(), selectedCard.getSuitAsString(), duration);
+                lastGameHistoryRecord.setCumulativeStateDuration(lastGameHistoryRecord.getCumulativeStateDuration() + duration);
+                lastGameHistoryRecord.setLastModDateTime(new Date());
+                recallManager.saveNewError(lastGameHistoryRecord, recallPosition, selectedCard.getCardNumberAsString(), selectedCard.getSuitAsString());
+                CardRecallErrors lastError = recallManager.loadLastErrorForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+                Log.d("DEBUG", "Added new error.  Error added = {recallPosition: " + recallPosition + ", selected card number: " +
+                        selectedCard.getCardNumberAsString() + ", selected card suit: " + selectedCard.getSuitAsString());
+                Log.d("DEBUG", "Error in database = " + recallManager.loadLastErrorForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId()));
 
             }
 

@@ -20,6 +20,9 @@ public interface CardRecallErrorsDao {
     @Query("SELECT COUNT(ERROR_ID) FROM CARD_RECALL_ERRORS WHERE SESSION_ID = :sessionId AND ATTEMPT_ID = :attemptId")
     public int getNumErrorsForAttempt(int sessionId, int attemptId);
 
+    @Query("SELECT * FROM CARD_RECALL_ERRORS WHERE ERROR_ID = (SELECT MAX(SUB.ERROR_ID) FROM CARD_RECALL_ERRORS SUB WHERE SUB.SESSION_ID = :sessionId AND SUB.ATTEMPT_ID = :attemptId)")
+    public CardRecallErrors loadLastErrorForAttempt(int sessionId, int attemptId);
+
     @Insert
     public void insertCardRecallError(CardRecallErrors cardRecallErrors);
 

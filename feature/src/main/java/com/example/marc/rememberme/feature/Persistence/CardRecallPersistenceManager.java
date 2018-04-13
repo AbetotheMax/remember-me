@@ -1,19 +1,13 @@
 package com.example.marc.rememberme.feature.Persistence;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.example.marc.rememberme.feature.Deck;
-import com.example.marc.rememberme.feature.Card;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -98,9 +92,7 @@ public class CardRecallPersistenceManager {
 
     }
 
-    public void saveNewError(Deck deck, int cardIndex, String cardNumberGuessed, String cardSuitGuessed, long duration) {}
-
-    public void saveNewError(GameHistory lastGameHistoryRecord, int cardIndex, String cardNumberGuessed, String cardSuitGuessed, long duration) {
+    public void saveNewError(GameHistory lastGameHistoryRecord, int cardIndex, String cardNumberGuessed, String cardSuitGuessed) {
 
         int deckId = lastGameHistoryRecord.getComponentInstanceId();
 
@@ -277,6 +269,72 @@ public class CardRecallPersistenceManager {
         }
         return suit;
 
+    }
+
+    public List<CardRecallErrors> loadErrorsForAttempt(final int sessionId, final int attemptId) {
+        List<CardRecallErrors> errorList = new ArrayList<>();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<CardRecallErrors>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.cardRecallErrorsDao().loadErrorsForAttempt(sessionId, attemptId);
+            }
+        });
+        try {
+            errorList = (List<CardRecallErrors>) future.get();
+            return errorList;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading card recall errors for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading card recall errors for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return errorList;
+    }
+
+    public int getNumErrorsForAttempt(final int sessionId, final int attemptId) {
+        int numErrors = 0;
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<Integer> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.cardRecallErrorsDao().getNumErrorsForAttempt(sessionId, attemptId);
+            }
+        });
+        try {
+            numErrors = (int) future.get();
+            return numErrors;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading number of errors for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading number of errors for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return numErrors;
+    }
+
+    public CardRecallErrors loadLastErrorForAttempt(final int sessionId, final int attemptId) {
+        CardRecallErrors lastError = new CardRecallErrors();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<CardRecallErrors> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.cardRecallErrorsDao().loadLastErrorForAttempt(sessionId, attemptId);
+            }
+        });
+        try {
+            lastError = (CardRecallErrors) future.get();
+            return lastError;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading last card recall error for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading last card recall error for session id " + sessionId + " and attempt id " + attemptId + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return lastError;
     }
 
     private void insertCardRecallError( final CardRecallErrors recallError) {

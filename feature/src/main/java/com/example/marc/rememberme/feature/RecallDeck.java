@@ -11,11 +11,15 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+import com.example.marc.rememberme.feature.Persistence.GameHistory;
+import com.example.marc.rememberme.feature.Persistence.GameSummary;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.marc.rememberme.feature.LearnNewDeck.LAST_GAME_HISTORY;
 import static com.example.marc.rememberme.feature.LearnNewDeck.LEARNED_DECK;
 
 /**
@@ -29,6 +33,7 @@ public class RecallDeck extends AppCompatActivity {
     List<Suit> expandableListTitle;
     HashMap<Suit, List<Card>> expandableListDetail;
     Deck deckToRecall;
+    GameHistory lastGameHistoryRecord;
     private ViewPager pager;
     private Chronometer chronometer;
     private CardRecallPersistenceManager recallManager;
@@ -41,15 +46,24 @@ public class RecallDeck extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         deckToRecall = bundle.getParcelable(LEARNED_DECK);
+        lastGameHistoryRecord = bundle.getParcelable(LAST_GAME_HISTORY);
         pager = (ViewPager) findViewById(R.id.recallDeckPager);
         recallManager = CardRecallPersistenceManager.getInstance(this);
-        //TODO: Need to pass a game state object or overload this method
-        //recallManager.updateGameState(false, "RECALL", "STARTED", 0, 0);
+
+        lastGameHistoryRecord.setGameState("RECALL");
+        lastGameHistoryRecord.setGameStateStatus("STARTED");
+        lastGameHistoryRecord.setLastPosition(0);
+        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        lastGameHistoryRecord.setLastModDateTime(new Date());
+        recallManager.updateGameState(lastGameHistoryRecord);
+        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+        Log.d("DEBUG", "Starting Recall.  GameState = " + gs);
+
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
         expandableListDetail = CardSuitsExpandableListDataPump.getData(this);
         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
-        expandableListAdapter = new CardSuitsExpandableListAdapter(this, expandableListTitle, expandableListDetail, deckToRecall, pager, findViewById(android.R.id.content));
+        expandableListAdapter = new CardSuitsExpandableListAdapter(this, expandableListTitle, expandableListDetail, deckToRecall, pager, findViewById(android.R.id.content), lastGameHistoryRecord);
         expandableListView.setAdapter(expandableListAdapter);
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
@@ -69,10 +83,15 @@ public class RecallDeck extends AppCompatActivity {
     public void cancel(View view) {
 
         chronometer.stop();
-        DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content));
-        //TODO: Need to pass a game state object or overload this method
-        //recallManager.updateGameState(false, "RECALL", "CANCELLED", results.getRecallPosition(), chronometer.getBase());
-
+        DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content), lastGameHistoryRecord);
+        lastGameHistoryRecord.setGameState("RECALL");
+        lastGameHistoryRecord.setGameStateStatus("CANCELLED");
+        lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
+        lastGameHistoryRecord.setCumulativeStateDuration(chronometer.getBase());
+        lastGameHistoryRecord.setLastModDateTime(new Date());
+        recallManager.updateGameState(lastGameHistoryRecord);
+        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+        Log.d("DEBUG", "Cancelling Recall.  GameState = " + gs);
 
     }
 

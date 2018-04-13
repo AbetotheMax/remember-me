@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.marc.rememberme.feature.Persistence.GameHistory;
+
 /**
  * Created by Marc on 3/15/2018.
  */
@@ -33,8 +35,10 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
     private Deck recallDeck;
     private ViewPager pager;
     private View rootView;
+    private GameHistory lastGameHistoryRecord;
 
-    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail, Deck recallDeck, ViewPager pager, View rootView) {
+    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail,
+                                          Deck recallDeck, ViewPager pager, View rootView, GameHistory lastGameHistoryRecord) {
 
         this.context = context;
         this.expandableListTitle = expandableListTitle;
@@ -42,6 +46,7 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
         this.recallDeck = recallDeck;
         this.pager = pager;
         this.rootView = rootView;
+        this.lastGameHistoryRecord = lastGameHistoryRecord;
 
     }
 
@@ -72,7 +77,7 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         HorizontalGridView gridView = (HorizontalGridView) convertView.findViewById(R.id.gridView);
-        GridAdapter adapter = new GridAdapter(context, expandedListCards, recallDeck, pager, rootView);
+        GridAdapter adapter = new GridAdapter(context, expandedListCards, recallDeck, pager, rootView, lastGameHistoryRecord);
         gridView.setAdapter(adapter);
         gridView.setNumRows(1);
         gridView.setRowHeight(500);
