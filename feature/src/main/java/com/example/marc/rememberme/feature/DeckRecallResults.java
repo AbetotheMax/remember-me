@@ -81,7 +81,7 @@ public class DeckRecallResults {
                 CardRecallErrors lastError = recallManager.loadLastErrorForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
                 Log.d("DEBUG", "Added new error.  Error added = {recallPosition: " + recallPosition + ", selected card number: " +
                         selectedCard.getCardNumberAsString() + ", selected card suit: " + selectedCard.getSuitAsString());
-                Log.d("DEBUG", "Error in database = " + recallManager.loadLastErrorForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId()));
+                Log.d("DEBUG", "Error in database = " + lastError.toString());
 
             }
 

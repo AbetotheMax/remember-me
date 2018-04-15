@@ -84,8 +84,7 @@ public class LearnNewDeck extends AppCompatActivity {
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
-        Log.d("DEBUG", "Session id = " + gs.getSessionId() + "; Game State = " + gs.getGameState() + "; game state status = " + gs.getGameStateStatus() +
-            "; errors");
+        Log.d("DEBUG", "In LearnNewDeck > restartDeck.  GameSummary = " + gs.toString());
     }
 
     public void cancel(View view) {
@@ -96,11 +95,11 @@ public class LearnNewDeck extends AppCompatActivity {
         lastGameHistoryRecord.setCumulativeStateDuration(0);
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
+        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+        Log.d("DEBUG", "In LearnNewDeck > cancel.  Game summary = " + gs.toString());
+
         Intent intent = new Intent(this, MemorizeThings.class);
         startActivity(intent);
-        GameSummary gs = db.gameSummaryDao().getGameSummary(db.gameHistoryDao().getMaxSessionId("CARD RECALL"), 1);
-        Log.d("DEBUG", "In cancel.  Game summary = " + gs);
-
     }
 
     public void recallDeck(View view) {

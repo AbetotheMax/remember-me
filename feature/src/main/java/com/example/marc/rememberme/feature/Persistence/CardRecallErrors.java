@@ -116,4 +116,12 @@ public class CardRecallErrors {
     public String getCardSuitGuessed() {
         return this.cardSuitGuessed;
     }
+
+    @Override
+    public String toString() {
+        return "Error ID: " + getErrorId() + ", Session ID: " + getSessionId() + ", Attempt ID: " + getAttemptId() +
+                ", Deck ID: " + getDeckId() + ", Card Index: " + getCardIndex() + ", Card Number: " + getCardNumber() +
+                ", Card Suit: " + getCardSuit() + ", Card Number Guessed: " + getCardNumberGuessed() +
+                ", Card Suit Guessed: " + getCardSuitGuessed() + ".";
+    }
 }

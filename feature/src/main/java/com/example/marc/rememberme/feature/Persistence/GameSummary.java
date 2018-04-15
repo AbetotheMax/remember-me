@@ -125,5 +125,14 @@ public class GameSummary {
         return this.lastModDateTime;
     }
 
+    @Override
+    public String toString() {
+        return "Session ID: " + getSessionId() + ", Attempt ID: " + getAttemptId() + ", Component " +
+                "Instance ID: " + getComponentInstanceId() + ", Game Desc: " + getGameDesc() +
+                ", Game State: " + getGameState() + ", Game State Status: " + getGameStateStatus() +
+                ", Last Position: " + getLastPosition() + ", Errors: " + getErrors() +
+                ", Cumulative State Duration: " + getCumulativeStateDuration() +
+                ", Last Mod Date Time: " + getLastModDateTime() + ".";
+    }
 
 }

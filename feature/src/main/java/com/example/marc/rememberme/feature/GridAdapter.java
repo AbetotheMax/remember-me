@@ -87,7 +87,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
                     lastGameHistoryRecord.setLastModDateTime(new Date());
                     recallManager.updateGameState(lastGameHistoryRecord);
                     GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
-                    Log.d("DEBUG", "Completed Recall.  GameState = " + gs);
+                    Log.d("DEBUG", "Completed Recall.  GameSummary = " + gs.toString());
 
                 }
             }

@@ -57,7 +57,7 @@ public class RecallDeck extends AppCompatActivity {
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
-        Log.d("DEBUG", "Starting Recall.  GameState = " + gs);
+        Log.d("DEBUG", "Starting Recall.  GameSummary = " + gs.toString());
 
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
@@ -91,7 +91,7 @@ public class RecallDeck extends AppCompatActivity {
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
-        Log.d("DEBUG", "Cancelling Recall.  GameState = " + gs);
+        Log.d("DEBUG", "Cancelling Recall.  GameSummary = " + gs.toString());
 
     }
 
