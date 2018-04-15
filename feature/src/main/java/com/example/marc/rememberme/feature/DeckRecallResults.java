@@ -100,7 +100,7 @@ public class DeckRecallResults {
 
         errorCount++;
         TextView textView = (TextView) recallView.findViewById(R.id.errorCountText);
-        textView.setText(Integer.toString(errorCount));
+        textView.setText("ERRORS: " + Integer.toString(errorCount));
 
     }
 
@@ -108,7 +108,7 @@ public class DeckRecallResults {
 
         String currentPositionText = recallPosition + " / " + numCards;
         TextView textView = (TextView) recallView.findViewById(R.id.currentPositionText);
-        textView.setText(currentPositionText);
+        textView.setText("CARD: " + currentPositionText);
         return recallPosition;
 
     }
