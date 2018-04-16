@@ -337,6 +337,52 @@ public class CardRecallPersistenceManager {
         return lastError;
     }
 
+    public List<String> getDatesOfPriorGames() {
+
+        List<String> gameDates = new ArrayList<>();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<String>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().getDatesOfPriorGames();
+            }
+        });
+        try {
+            gameDates = (List<String>) future.get();
+            return gameDates;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading prior game dates.  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading prior game dates.  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return gameDates;
+
+    }
+
+    public List<GameSummary> loadGameSummariesForDate(final String gameDate) {
+        List<GameSummary> gameSummaries = new ArrayList<>();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<GameSummary>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().loadGamesForDate(gameDate);
+            }
+        });
+        try {
+            gameSummaries = (List<GameSummary>) future.get();
+            return gameSummaries;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading game summaries for date " + gameDate + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading game summaries for date " + gameDate + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return gameSummaries;
+    }
+
     private void insertCardRecallError( final CardRecallErrors recallError) {
         executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {
