@@ -383,6 +383,29 @@ public class CardRecallPersistenceManager {
         return gameSummaries;
     }
 
+    public List<GameHistoryOverview> loadGameOverviewsForDate(final String gameDate) {
+        List<GameHistoryOverview> gameOverviews = new ArrayList<>();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<GameHistoryOverview>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().loadGameOverviewsForDate(gameDate);
+            }
+        });
+        try {
+            gameOverviews = (List<GameHistoryOverview>) future.get();
+            return gameOverviews;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading game overviews for date " + gameDate + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading game overviews for date " + gameDate + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return gameOverviews;
+    }
+
+
     private void insertCardRecallError( final CardRecallErrors recallError) {
         executor = Executors.newSingleThreadExecutor();
         executor.execute(new Runnable() {

@@ -3,6 +3,7 @@ package com.example.marc.rememberme.feature;
 import android.content.Context;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
+import com.example.marc.rememberme.feature.Persistence.GameHistoryOverview;
 import com.example.marc.rememberme.feature.Persistence.GameSummary;
 
 import java.util.HashMap;
@@ -23,14 +24,14 @@ public class GameHistoryExpandableListDataPump {
         this.recallManager = CardRecallPersistenceManager.getInstance(context);
     }
 
-    public Map<String, List<GameSummary>> loadPriorGameSummaries() {
-        Map<String, List<GameSummary>> priorGames = new HashMap<>();
+    public Map<String, List<GameHistoryOverview>> loadPriorGameOverviews() {
+        Map<String, List<GameHistoryOverview>> priorGames = new HashMap<>();
         List<String> gameDates = recallManager.getDatesOfPriorGames();
 
         for(String gameDate : gameDates) {
 
-            List<GameSummary> gameSummary = recallManager.loadGameSummariesForDate(gameDate);
-            priorGames.put(gameDate, gameSummary);
+            List<GameHistoryOverview> gameOverview = recallManager.loadGameOverviewsForDate(gameDate);
+            priorGames.put(gameDate, gameOverview);
 
         }
         
