@@ -34,7 +34,7 @@ public class GameHistoryExpandableListDataPump {
             priorGames.put(gameDate, gameOverview);
 
         }
-        
+
         return priorGames;
     }
 

@@ -405,6 +405,27 @@ public class CardRecallPersistenceManager {
         return gameOverviews;
     }
 
+    public List<GameHistoryOverview> loadGameOverviews() {
+        List<GameHistoryOverview> gameOverviews = new ArrayList<>();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<GameHistoryOverview>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().loadGameOverviews();
+            }
+        });
+        try {
+            gameOverviews = (List<GameHistoryOverview>) future.get();
+            return gameOverviews;
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading game overviews.  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading game overviews.  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+        return gameOverviews;
+    }
 
     private void insertCardRecallError( final CardRecallErrors recallError) {
         executor = Executors.newSingleThreadExecutor();

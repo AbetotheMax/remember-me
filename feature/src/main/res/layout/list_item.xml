@@ -12,6 +12,3 @@
      />
 
 </android.support.constraint.ConstraintLayout>
-
-
-    <!--        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft" -->

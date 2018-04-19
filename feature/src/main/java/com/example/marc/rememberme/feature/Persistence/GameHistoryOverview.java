@@ -8,6 +8,8 @@ import android.arch.persistence.room.ColumnInfo;
 
 public class GameHistoryOverview {
 
+    @ColumnInfo(name = "GAME_DATE")
+    private String gameDate;
     @ColumnInfo(name = "DECK_ID")
     private int deckId;
     @ColumnInfo(name = "GAME_STATE")
@@ -23,6 +25,8 @@ public class GameHistoryOverview {
     @ColumnInfo(name = "ACTION_TO_TAKE")
     private String actionToTake;
 
+    public void setGameDate(String gameDate) {this.gameDate = gameDate;}
+    
     public void setDeckId(int id) {this.deckId = id;}
 
     public void setGameState(String gameState) {this.gameState = gameState;}
@@ -36,6 +40,8 @@ public class GameHistoryOverview {
     public void setDuration(long duration) {this.duration = duration;}
 
     public void setActionToTake(String action) {this.actionToTake = action;}
+
+    public String getGameDate() {return gameDate;}
 
     public int getDeckId() {return deckId;}
 

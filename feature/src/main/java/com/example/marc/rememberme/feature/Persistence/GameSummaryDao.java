@@ -79,6 +79,57 @@ public interface GameSummaryDao {
             "LAST_MOD_DATE_TIME DESC")
     public List<GameHistoryOverview> loadGameOverviewsForDate(String gameDate);
 
+    @Query("WITH RAW_DATA AS " +
+            "(SELECT " +
+            " GS.COMPONENT_INSTANCE_ID AS DECK_ID " +
+            ", GS.GAME_STATE " +
+            ", GS.LAST_POSITION " +
+            ", CAST((GS.LAST_POSITION * 1.0) / (SELECT DECKS.NUM_DECKS * 52.0 FROM DECKS WHERE DECKS.DECK_ID = GS.COMPONENT_INSTANCE_ID) * 100 AS INTEGER) AS PROGRESS " +
+            ", (SELECT " +
+            "COUNT(ERRORS.ERROR_ID) " +
+            "FROM " +
+            "CARD_RECALL_ERRORS ERRORS " +
+            " WHERE " +
+            "ERRORS.DECK_ID = GS.COMPONENT_INSTANCE_ID AND " +
+            "ERRORS.SESSION_ID = GS.SESSION_ID AND " +
+            "ERRORS.ATTEMPT_ID = GS.ATTEMPT_ID " +
+            ") AS ERROR_COUNT " +
+            ", GS.CUMULATIVE_STATE_DURATION AS DURATION " +
+            ", CASE " +
+            "WHEN " +
+            "GS.GAME_STATE = 'RECALL' AND " +
+            "GS.GAME_STATE_STATUS = 'COMPLETED' " +
+            "THEN " +
+            "'REPLAY' " +
+            "ELSE " +
+            "'RESUME' " +
+            "END AS ACTION_TO_TAKE " +
+            ", GS.LAST_MOD_DATE_TIME " +
+            "FROM " +
+            "GAME_SUMMARY GS " +
+            ")" +
+            "SELECT " +
+            "DATE(SUBSTR(LAST_MOD_DATE_TIME, 1, 10), 'UNIXEPOCH') AS GAME_DATE" +
+            ", DECK_ID " +
+            ", GAME_STATE " +
+            ", PROGRESS " +
+            ", ERROR_COUNT " +
+            ", CASE " +
+            "WHEN " +
+            "GAME_STATE = 'RECALL' " +
+            "THEN " +
+            "IFNULL(100 - CAST((ERROR_COUNT * 1.0) / (LAST_POSITION * 1.0) * 100 AS INTEGER), 0) " +
+            "ELSE " +
+            "0 " +
+            "END AS ACCURACY " +
+            ", DURATION " +
+            ", ACTION_TO_TAKE " +
+            "FROM " +
+            "RAW_DATA " +
+            "ORDER BY " +
+            "LAST_MOD_DATE_TIME DESC")
+    public List<GameHistoryOverview> loadGameOverviews();
+
     @Insert
     public void insertGameSummary(GameSummary gameSummary);
 
