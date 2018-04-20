@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by Marc on 4/19/2018.
  */
 
-public class GameHistoryDataPump {
+class GameHistoryDataPump {
 
     private CardRecallPersistenceManager recallManager;
     private Context context;

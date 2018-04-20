@@ -24,4 +24,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchGameHistory(View view) {
+
+        Intent intent = new Intent(this, History.class);
+        startActivity(intent);
+
+    }
+
+
 }

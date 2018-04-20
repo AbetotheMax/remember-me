@@ -42,13 +42,13 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
 
         gameDate.setText(previousGames.get(position).getGameDate());
         String state = previousGames.get(position).getGameState();
-        gameState.setText(state);
+        gameState.setText("Last Game State: " + state);
         int progress = previousGames.get(position).getProgress();
 
         if("RECALL".equals(state)) {
-
-            errorCount.setText(previousGames.get(position).getErrorCount());
-            accuracy.setText(previousGames.get(position).getAccuracy() + "%");
+            String errorCountText = Integer.toString(previousGames.get(position).getErrorCount());
+            errorCount.setText("Errors: " + errorCountText );
+            accuracy.setText("Accuracy: " + previousGames.get(position).getAccuracy() + "%");
 
             if(progress == 100) {
 
