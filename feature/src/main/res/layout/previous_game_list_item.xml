@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/gameState"
-        android:layout_width="91dp"
+        android:layout_width="139dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -41,10 +41,13 @@
         android:id="@+id/errorCount"
         android:layout_width="115dp"
         android:layout_height="19dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="error count"
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gameState"
         app:layout_constraintTop_toBottomOf="@+id/gameDate" />
 
@@ -52,10 +55,13 @@
         android:id="@+id/accuracy"
         android:layout_width="115dp"
         android:layout_height="19dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="accuracy"
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/gameState"
         app:layout_constraintTop_toBottomOf="@+id/errorCount" />
 
