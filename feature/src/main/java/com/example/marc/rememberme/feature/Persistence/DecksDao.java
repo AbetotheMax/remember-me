@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface DecksDao {
 
-    @Query("SELECT * FROM DECKS WHERE DECK_ID = :deckId")
+    @Query("SELECT * FROM DECKS WHERE DECK_ID = :deckId ORDER BY CARD_INDEX ASC")
     public List<Decks> loadAllCardsFromDeck(int deckId);
 
     @Query("SELECT CARD_NUMBER FROM DECKS WHERE DECK_ID = :deckId AND CARD_INDEX = :cardIndex")

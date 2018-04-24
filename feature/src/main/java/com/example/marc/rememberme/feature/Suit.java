@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by Marc on 2/27/2018.
  */
 
-enum Suit {
+public enum Suit {
 
     CLUBS(0),
     SPADES(1),

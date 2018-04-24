@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by Marc on 2/27/2018.
  */
 
-enum CardNumber {
+public enum CardNumber {
 
     ACE(1),
     TWO(2),

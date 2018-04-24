@@ -2,6 +2,10 @@ package com.example.marc.rememberme.feature.Persistence;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.example.marc.rememberme.feature.Card;
+import com.example.marc.rememberme.feature.CardNumber;
+import com.example.marc.rememberme.feature.Suit;
 import com.example.marc.rememberme.feature.Deck;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,9 +25,11 @@ public class CardRecallPersistenceManager {
     private static CardRecallPersistenceManager instance;
     private RememberMeDb db;
     private ExecutorService executor;
+    private Context context;
 
     private CardRecallPersistenceManager(Context context) {
 
+        this.context = context;
         db = RememberMeDb.getInstance(context);
 
     }
@@ -425,6 +431,40 @@ public class CardRecallPersistenceManager {
             executor.shutdown();
         }
         return gameOverviews;
+    }
+
+    public Deck loadDeckForId(final int deckId) {
+        List<Decks> deckComponents;
+        Deck deck = new Deck();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<List<Decks>> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.decksDao().loadAllCardsFromDeck(deckId);
+            }
+        });
+        try {
+            deckComponents = (List<Decks>) future.get();
+
+            for(Decks component : deckComponents) {
+
+                Card card = new Card(context, Suit.valueOf(component.getCardSuit()), CardNumber.valueOf(component.getCardNumber()));
+                deck.add(card);
+
+            }
+
+            return deck;
+
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading game overviews.  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading game overviews.  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+
+        return deck;
+
     }
 
     private void insertCardRecallError( final CardRecallErrors recallError) {

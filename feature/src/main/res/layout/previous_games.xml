@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
+        android:divider="#123456"
+        android:dividerHeight="2dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

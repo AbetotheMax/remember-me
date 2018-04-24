@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.previous_game_list_item, parent, false);
         TextView gameDate = (TextView) rowView.findViewById(R.id.gameDate);
@@ -38,7 +39,6 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
         TextView errorCount = (TextView) rowView.findViewById(R.id.errorCount);
         TextView accuracy = (TextView) rowView.findViewById(R.id.accuracy);
         ProgressBar progressBar = (ProgressBar) rowView.findViewById(R.id.progressBar);
-        Button playButton = (Button) rowView.findViewById(R.id.playButton);
 
         gameDate.setText(previousGames.get(position).getGameDate());
         String state = previousGames.get(position).getGameState();
@@ -52,11 +52,11 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
 
             if(progress == 100) {
 
-                playButton.setText("Replay");
+       //         playButton.setText("Replay");
 
             }else {
 
-                playButton.setText("Resume");
+         //       playButton.setText("Resume");
 
             }
 
@@ -64,11 +64,17 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
 
             errorCount.setVisibility(View.INVISIBLE);
             accuracy.setVisibility(View.INVISIBLE);
-            playButton.setText("Resume");
 
         }
 
         progressBar.setProgress(progress);
+        ImageButton playButton = (ImageButton) rowView.findViewById(R.id.greenPlayButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GameReconstructor.reconstructGame(context, previousGames.get(position));
+            }
+        });
 
         return rowView;
 
