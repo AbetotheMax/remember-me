@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
@@ -15,7 +17,7 @@ import java.util.Date;
 @Entity(tableName = "GAME_SUMMARY", primaryKeys = {"SESSION_ID", "ATTEMPT_ID"})
 @TypeConverters(Converters.class)
 
-public class GameSummary {
+public class GameSummary implements Parcelable{
 
     @ColumnInfo(name = "SESSION_ID")
     @NonNull
@@ -48,6 +50,8 @@ public class GameSummary {
 
     @ColumnInfo(name = "LAST_MOD_DATE_TIME")
     private Date lastModDateTime;
+
+    public GameSummary() {}
 
     public void setSessionId(int id) {
         this.sessionId = id;
@@ -134,5 +138,58 @@ public class GameSummary {
                 ", Cumulative State Duration: " + getCumulativeStateDuration() +
                 ", Last Mod Date Time: " + getLastModDateTime() + ".";
     }
+
+    @Override
+    public int describeContents() {
+
+        return 0;
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeInt(getSessionId());
+        dest.writeInt(getAttemptId());
+        dest.writeInt(getComponentInstanceId());
+        dest.writeString(getGameDesc());
+        dest.writeString(getGameState());
+        dest.writeString(getGameStateStatus());
+        dest.writeInt(getLastPosition());
+        dest.writeInt(getErrors() ? 1 : 0);
+        dest.writeLong(getCumulativeStateDuration());
+        dest.writeLong(getLastModDateTime().getTime());
+
+    }
+
+    public GameSummary(Parcel in) {
+
+        setSessionId(in.readInt());
+        setAttemptId(in.readInt());
+        setComponentInstanceId(in.readInt());
+        setGameDesc(in.readString());
+        setGameState(in.readString());
+        setGameStateStatus(in.readString());
+        setLastPosition(in.readInt());
+        setErrors(in.readInt() != 0);
+        setCumulativeStateDuration(in.readLong());
+        setLastModDateTime(new Date(in.readLong()));
+
+    }
+
+    public static final Parcelable.Creator<GameSummary> CREATOR = new Parcelable.Creator<GameSummary>() {
+
+        public GameSummary createFromParcel(Parcel in) {
+
+            return new GameSummary(in);
+        }
+
+        public GameSummary[] newArray(int size) {
+
+            return new GameSummary[size];
+
+        }
+
+    };
 
 }

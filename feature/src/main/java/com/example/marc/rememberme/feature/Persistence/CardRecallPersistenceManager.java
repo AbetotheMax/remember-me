@@ -47,19 +47,12 @@ public class CardRecallPersistenceManager {
     }
 
     public GameHistory saveNewGame(Deck deck) {
-        int deckId;
+        int deckId = getMaxDeckId() + 1;
         int numDecks;
-        int maxDeckId = getMaxDeckId();
-        if(maxDeckId != 0) {
-            deckId = maxDeckId;
-            deckId += 1;
-        } else {
-            deckId = 1;
-        }
         numDecks = deck.getNumDecks();
 
         List<Decks> completeDeck = new ArrayList<>();
-        for(int i = 0; i < deck.getCards().size(); i++) {
+        for (int i = 0; i < deck.getCards().size(); i++) {
 
             Decks decksRecord = new Decks();
             decksRecord.setDeckId(deckId);
@@ -72,14 +65,14 @@ public class CardRecallPersistenceManager {
         }
         insertDeck(completeDeck);
 
+        return saveNewGame(deck, deckId);
+
+    }
+
+    public GameHistory saveNewGame(Deck deck, int deckId) {
+
         GameHistory lastGameHistoryRecord = new GameHistory();
-        int maxSessionId = getMaxSessionId();
-        int sessionId;
-        if(maxSessionId != 0) {
-            sessionId = maxSessionId + 1;
-        } else {
-            sessionId = 1;
-        }
+        int sessionId = getMaxSessionId() + 1;
 
         lastGameHistoryRecord.setSessionId(sessionId);
         lastGameHistoryRecord.setAttemptId(1);
@@ -464,6 +457,33 @@ public class CardRecallPersistenceManager {
         }
 
         return deck;
+
+    }
+
+    public GameSummary getLastGameSummaryForComponent(final int componentInstanceId) {
+
+        GameSummary gameSummary = new GameSummary();
+
+        executor = Executors.newSingleThreadExecutor();
+        Future<GameSummary> future = executor.submit(new Callable() {
+            public Object call() {
+                return  db.gameSummaryDao().getLastGameSummaryForComponent(componentInstanceId);
+            }
+        });
+        try {
+            gameSummary = (GameSummary) future.get();
+
+            return gameSummary;
+
+        } catch(InterruptedException ie) {
+            Log.e("ERROR", "Error loading last game summary for component id " + componentInstanceId + ".  Error message: " + ie);
+        } catch(ExecutionException ee) {
+            Log.e("ERROR", "Error loading last game summary for component id " + componentInstanceId + ".  Error message: " + ee);
+        } finally {
+            executor.shutdown();
+        }
+
+        return gameSummary;
 
     }
 

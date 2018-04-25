@@ -1,6 +1,8 @@
 package com.example.marc.rememberme.feature.Persistence;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by Marc on 4/17/2018.
@@ -56,5 +58,6 @@ public class GameHistoryOverview {
     public long getDuration() {return duration;}
 
     public String getActionToTake() {return actionToTake;}
+
 
 }

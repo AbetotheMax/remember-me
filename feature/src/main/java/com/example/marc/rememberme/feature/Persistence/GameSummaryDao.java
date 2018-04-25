@@ -18,6 +18,9 @@ public interface GameSummaryDao {
     @Query("SELECT * FROM GAME_SUMMARY WHERE SESSION_ID = :sessionId AND ATTEMPT_ID = :attemptId")
     public GameSummary getGameSummary(int sessionId, int attemptId);
 
+    @Query("SELECT GS.* FROM GAME_SUMMARY  GS WHERE GS.COMPONENT_INSTANCE_ID = :componentInstanceId AND GS.LAST_MOD_DATE_TIME = (SELECT MAX(GS_SUB.LAST_MOD_DATE_TIME) FROM GAME_SUMMARY GS_SUB WHERE GS_SUB.COMPONENT_INSTANCE_ID = GS.COMPONENT_INSTANCE_ID)")
+    public GameSummary getLastGameSummaryForComponent(int componentInstanceId);
+
     @Query("SELECT MAX(SESSION_ID) FROM GAME_SUMMARY WHERE GAME_DESC = :gameDesc")
     public int getMaxSessionId(String gameDesc);
 
