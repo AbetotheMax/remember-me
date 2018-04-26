@@ -40,18 +40,34 @@ public class LearnNewDeck extends AppCompatActivity {
 
         super.onCreate(savedInstanceBundle);
         setContentView(R.layout.learn_new_deck);
-        deck = new Deck(this);
-        deck.shuffle();
         recallManager = CardRecallPersistenceManager.getInstance(this);
-        lastGameHistoryRecord = recallManager.saveNewGame(deck);
+        setUpDeckAndHistoryRecord();
         // begin debugging
         maxDeckId = recallManager.getMaxDeckId();
         Log.d("DEBUG", "Deck id = " + maxDeckId);
         Log.d("DEBUG", "First card number = " + recallManager.getCardNumber(maxDeckId, 0));
         Log.d("DEBUG", "First card suit = " + recallManager.getCardSuit(maxDeckId, 0));
         //end debugging
-        setCurrentPositionText(1, deck.getCards().size());
+        setCurrentPositionText(lastGameHistoryRecord.getLastPosition() + 1, deck.getCards().size());
         initializePagerView(deck);
+
+    }
+
+    private void setUpDeckAndHistoryRecord() {
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+
+            deck = bundle.getParcelable(LEARNED_DECK);
+            lastGameHistoryRecord = bundle.getParcelable(LAST_GAME_HISTORY);
+
+        } else {
+
+            deck = new Deck(this);
+            deck.shuffle();
+            lastGameHistoryRecord = recallManager.saveNewGame(deck);
+
+        }
 
     }
 
@@ -61,6 +77,12 @@ public class LearnNewDeck extends AppCompatActivity {
         adapter = new ImagePagerAdapter(deck, this);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new DetailOnPageChangeListener());
+
+        if(lastGameHistoryRecord.getLastPosition() != 0) {
+
+            viewPager.setCurrentItem(lastGameHistoryRecord.getLastPosition());
+
+        }
 
     }
 

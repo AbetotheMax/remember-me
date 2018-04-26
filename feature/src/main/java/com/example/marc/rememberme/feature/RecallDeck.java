@@ -50,10 +50,19 @@ public class RecallDeck extends AppCompatActivity {
         pager = (ViewPager) findViewById(R.id.recallDeckPager);
         recallManager = CardRecallPersistenceManager.getInstance(this);
 
-        lastGameHistoryRecord.setGameState("RECALL");
-        lastGameHistoryRecord.setGameStateStatus("STARTED");
-        lastGameHistoryRecord.setLastPosition(0);
-        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        if(lastGameHistoryRecord.getGameState().equals("LEARNING")) {
+
+            lastGameHistoryRecord.setGameState("RECALL");
+            lastGameHistoryRecord.setGameStateStatus("STARTED");
+            lastGameHistoryRecord.setLastPosition(0);
+            lastGameHistoryRecord.setCumulativeStateDuration(0);
+
+        } else {
+
+            lastGameHistoryRecord.setGameStateStatus("RESUMED");
+
+        }
+
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());

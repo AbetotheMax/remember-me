@@ -129,6 +129,24 @@ public class GameSummary implements Parcelable{
         return this.lastModDateTime;
     }
 
+    public GameHistory convertToGameHistory() {
+
+        GameHistory gh = new GameHistory();
+        gh.setSessionId(getSessionId());
+        gh.setAttemptId(getAttemptId());
+        gh.setComponentInstanceId(getComponentInstanceId());
+        gh.setGameDesc(getGameDesc());
+        gh.setGameState(getGameState());
+        gh.setGameStateStatus(getGameStateStatus());
+        gh.setLastPosition(getLastPosition());
+        gh.setErrors(getErrors());
+        gh.setCumulativeStateDuration(getCumulativeStateDuration());
+        gh.setLastModDateTime(getLastModDateTime());
+
+        return gh;
+
+    }
+
     @Override
     public String toString() {
         return "Session ID: " + getSessionId() + ", Attempt ID: " + getAttemptId() + ", Component " +

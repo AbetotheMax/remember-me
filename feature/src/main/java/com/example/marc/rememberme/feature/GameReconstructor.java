@@ -26,20 +26,35 @@ public class GameReconstructor {
         recallManager = CardRecallPersistenceManager.getInstance(context);
         Deck deck = recallManager.loadDeckForId(overview.getDeckId());
         GameSummary gameSummary = recallManager.getLastGameSummaryForComponent(overview.getDeckId());
+        GameHistory lastGameHistory;
 
         if(overview.getProgress() == 100) {
 
-            GameHistory lastGameHistory = recallManager.saveNewGame(deck, overview.getDeckId());
+            lastGameHistory = recallManager.saveNewGame(deck, overview.getDeckId());
 
-            Intent intent = new Intent(context, LearnNewDeck.class);
-            intent.putExtra(LEARNED_DECK, deck);
-            intent.putExtra(LAST_GAME_HISTORY, lastGameHistory);
-            startActivity(intent);
 
-            }
+        } else {
 
+            lastGameHistory = gameSummary.convertToGameHistory();
 
         }
+
+        Intent intent;
+
+        if(overview.getGameState().equals("LEARNING") || overview.getProgress() == 100) {
+
+            intent = new Intent(context, LearnNewDeck.class);
+
+        } else {
+
+            intent = new Intent(context, RecallDeck.class);
+
+        }
+
+        intent.putExtra(LEARNED_DECK, deck);
+        intent.putExtra(LAST_GAME_HISTORY, lastGameHistory);
+        context.startActivity(intent);
+
 
     }
 

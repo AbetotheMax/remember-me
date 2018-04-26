@@ -64,6 +64,15 @@ public class DeckRecallResults {
         adapter = new ImagePagerAdapter(deck, context);
         recallPager.setAdapter(adapter);
 
+        if(lastGameHistoryRecord.getLastPosition() != 0) {
+
+            recallPager.setCurrentItem(lastGameHistoryRecord.getLastPosition());
+            updateProgress();
+            errorCount = recallManager.getNumErrorsForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId()) - 1;
+            updateErrorCount();
+
+        }
+
     }
 
     public boolean isSelectionCorrect(Card selectedCard, long duration) {
