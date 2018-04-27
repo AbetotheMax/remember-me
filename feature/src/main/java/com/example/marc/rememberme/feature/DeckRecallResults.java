@@ -66,6 +66,15 @@ public class DeckRecallResults {
 
         if(lastGameHistoryRecord.getLastPosition() != 0) {
 
+            recallPosition = lastGameHistoryRecord.getLastPosition();
+
+            for(int i = 0; i < recallPosition ; i++) {
+
+                deck.add(recallDeck.getCard(i));
+
+            }
+
+            adapter.notifyDataSetChanged();
             recallPager.setCurrentItem(lastGameHistoryRecord.getLastPosition());
             updateProgress();
             errorCount = recallManager.getNumErrorsForAttempt(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId()) - 1;

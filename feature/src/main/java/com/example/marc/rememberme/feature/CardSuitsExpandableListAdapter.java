@@ -2,6 +2,8 @@ package com.example.marc.rememberme.feature;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
@@ -31,13 +33,13 @@ public class CardSuitsExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<Suit> expandableListTitle;
-    private HashMap<Suit, List<Card>> expandableListDetail;
+    private Map<Suit, List<Card>> expandableListDetail;
     private Deck recallDeck;
     private ViewPager pager;
     private View rootView;
     private GameHistory lastGameHistoryRecord;
 
-    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, HashMap<Suit, List<Card>> expandableListDetail,
+    public CardSuitsExpandableListAdapter(Context context, List<Suit> expandableListTitle, Map<Suit, List<Card>> expandableListDetail,
                                           Deck recallDeck, ViewPager pager, View rootView, GameHistory lastGameHistoryRecord) {
 
         this.context = context;

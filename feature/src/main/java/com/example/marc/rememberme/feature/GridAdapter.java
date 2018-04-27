@@ -1,6 +1,7 @@
 package com.example.marc.rememberme.feature;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -83,7 +84,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.SimpleViewHold
                     lastGameHistoryRecord.setGameState("RECALL");
                     lastGameHistoryRecord.setGameStateStatus("COMPLETED");
                     lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
-                    lastGameHistoryRecord.setCumulativeStateDuration(chronometer.getBase());
+                    lastGameHistoryRecord.setCumulativeStateDuration(SystemClock.elapsedRealtime() - chronometer.getBase());
                     lastGameHistoryRecord.setLastModDateTime(new Date());
                     recallManager.updateGameState(lastGameHistoryRecord);
                     GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());

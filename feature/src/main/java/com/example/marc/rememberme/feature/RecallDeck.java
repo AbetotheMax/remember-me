@@ -1,5 +1,6 @@
 package com.example.marc.rememberme.feature;
 
+import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.marc.rememberme.feature.LearnNewDeck.LAST_GAME_HISTORY;
 import static com.example.marc.rememberme.feature.LearnNewDeck.LEARNED_DECK;
@@ -31,7 +33,7 @@ public class RecallDeck extends AppCompatActivity {
     ExpandableListView expandableListView;
     ExpandableListAdapter expandableListAdapter;
     List<Suit> expandableListTitle;
-    HashMap<Suit, List<Card>> expandableListDetail;
+    Map<Suit, List<Card>> expandableListDetail;
     Deck deckToRecall;
     GameHistory lastGameHistoryRecord;
     private ViewPager pager;
@@ -85,6 +87,7 @@ public class RecallDeck extends AppCompatActivity {
         });
 
         chronometer = (Chronometer) findViewById(R.id.recallChronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime() - lastGameHistoryRecord.getCumulativeStateDuration());
         chronometer.start();
 
     }
@@ -96,7 +99,7 @@ public class RecallDeck extends AppCompatActivity {
         lastGameHistoryRecord.setGameState("RECALL");
         lastGameHistoryRecord.setGameStateStatus("CANCELLED");
         lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
-        lastGameHistoryRecord.setCumulativeStateDuration(chronometer.getBase());
+        lastGameHistoryRecord.setCumulativeStateDuration(SystemClock.elapsedRealtime() - chronometer.getBase());
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
