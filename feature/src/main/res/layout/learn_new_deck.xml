@@ -19,6 +19,15 @@
 
     </ImageView>
 
+    <Chronometer
+        android:id="@+id/learningChronometer"
+        android:layout_width="58dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"

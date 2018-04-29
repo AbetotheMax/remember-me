@@ -86,24 +86,46 @@ public class RecallDeck extends AppCompatActivity {
             }
         });
 
-        chronometer = (Chronometer) findViewById(R.id.recallChronometer);
+        startChronometer();
+    }
+
+    public void cancel(View view) {
+
+        stopChronometer();
+        DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content), lastGameHistoryRecord);
+        lastGameHistoryRecord.setGameState("RECALL");
+        lastGameHistoryRecord.setGameStateStatus("CANCELLED");
+        lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
+        lastGameHistoryRecord.setCumulativeStateDuration(getChronometerDuration());
+        lastGameHistoryRecord.setLastModDateTime(new Date());
+        recallManager.updateGameState(lastGameHistoryRecord);
+        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
+        Log.d("DEBUG", "Cancelling Recall.  GameSummary = " + gs.toString());
+
+    }
+
+    private void startChronometer() {
+
+        if(chronometer == null) {
+
+            chronometer = (Chronometer) findViewById(R.id.recallChronometer);
+
+        }
+
         chronometer.setBase(SystemClock.elapsedRealtime() - lastGameHistoryRecord.getCumulativeStateDuration());
         chronometer.start();
 
     }
 
-    public void cancel(View view) {
+    private void stopChronometer() {
 
         chronometer.stop();
-        DeckRecallResults results = DeckRecallResults.getInstance(deckToRecall, this, pager, findViewById(android.R.id.content), lastGameHistoryRecord);
-        lastGameHistoryRecord.setGameState("RECALL");
-        lastGameHistoryRecord.setGameStateStatus("CANCELLED");
-        lastGameHistoryRecord.setLastPosition(results.getRecallPosition());
-        lastGameHistoryRecord.setCumulativeStateDuration(SystemClock.elapsedRealtime() - chronometer.getBase());
-        lastGameHistoryRecord.setLastModDateTime(new Date());
-        recallManager.updateGameState(lastGameHistoryRecord);
-        GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
-        Log.d("DEBUG", "Cancelling Recall.  GameSummary = " + gs.toString());
+
+    }
+
+    private long getChronometerDuration() {
+
+        return SystemClock.elapsedRealtime() - chronometer.getBase();
 
     }
 

@@ -2,10 +2,12 @@ package com.example.marc.rememberme.feature;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallPersistenceManager;
@@ -27,10 +29,9 @@ public class LearnNewDeck extends AppCompatActivity {
     private ImagePagerAdapter adapter;
     private CardRecallPersistenceManager recallManager;
     private int currentPosition;
-    // for debugging
     private RememberMeDb db;
-    private int maxDeckId;
     private GameHistory lastGameHistoryRecord;
+    private Chronometer chronometer;
 
     public static final String LEARNED_DECK = "com.example.marc.rememberme.feature.DECK";
     public static final String LAST_GAME_HISTORY = "com.example.marc.rememberme.feature.Persistence.GAMEHISTORY";
@@ -42,14 +43,9 @@ public class LearnNewDeck extends AppCompatActivity {
         setContentView(R.layout.learn_new_deck);
         recallManager = CardRecallPersistenceManager.getInstance(this);
         setUpDeckAndHistoryRecord();
-        // begin debugging
-        maxDeckId = recallManager.getMaxDeckId();
-        Log.d("DEBUG", "Deck id = " + maxDeckId);
-        Log.d("DEBUG", "First card number = " + recallManager.getCardNumber(maxDeckId, 0));
-        Log.d("DEBUG", "First card suit = " + recallManager.getCardSuit(maxDeckId, 0));
-        //end debugging
         setCurrentPositionText(lastGameHistoryRecord.getLastPosition() + 1, deck.getCards().size());
         initializePagerView(deck);
+        startChronometer();
 
     }
 
@@ -101,35 +97,66 @@ public class LearnNewDeck extends AppCompatActivity {
         lastGameHistoryRecord.setGameState("LEARNING");
         lastGameHistoryRecord.setGameStateStatus("RESTARTED");
         lastGameHistoryRecord.setLastPosition(currentPosition);
-        // TODO: Add logic to update duration.  Setting to 0 here as a placeholder
-        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        lastGameHistoryRecord.setCumulativeStateDuration(getChronometerDuration());
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
+
+        //for debugging
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
         Log.d("DEBUG", "In LearnNewDeck > restartDeck.  GameSummary = " + gs.toString());
     }
 
     public void cancel(View view) {
+
+        stopChronometer();
         lastGameHistoryRecord.setGameState("LEARNING");
         lastGameHistoryRecord.setGameStateStatus("CANCELLED");
         lastGameHistoryRecord.setLastPosition(currentPosition);
-        // TODO: Add logic to update duration.  Setting to 0 here as a placeholder
-        lastGameHistoryRecord.setCumulativeStateDuration(0);
+        lastGameHistoryRecord.setCumulativeStateDuration(getChronometerDuration());
         lastGameHistoryRecord.setLastModDateTime(new Date());
         recallManager.updateGameState(lastGameHistoryRecord);
+
+        //for debugging
         GameSummary gs = recallManager.getGameSummary(lastGameHistoryRecord.getSessionId(), lastGameHistoryRecord.getAttemptId());
         Log.d("DEBUG", "In LearnNewDeck > cancel.  Game summary = " + gs.toString());
-
+        //end debugging
         Intent intent = new Intent(this, MemorizeThings.class);
         startActivity(intent);
+
     }
 
     public void recallDeck(View view) {
 
+        stopChronometer();
         Intent intent = new Intent(this, RecallDeck.class);
         intent.putExtra(LEARNED_DECK, deck);
         intent.putExtra(LAST_GAME_HISTORY, lastGameHistoryRecord);
         startActivity(intent);
+
+    }
+
+    private void startChronometer() {
+
+        if(chronometer == null) {
+
+            chronometer = (Chronometer) findViewById(R.id.learningChronometer);
+
+        }
+
+        chronometer.setBase(SystemClock.elapsedRealtime() - lastGameHistoryRecord.getCumulativeStateDuration());
+        chronometer.start();
+
+    }
+
+    private void stopChronometer() {
+
+        chronometer.stop();
+
+    }
+
+    private long getChronometerDuration() {
+
+        return SystemClock.elapsedRealtime() - chronometer.getBase();
 
     }
 
