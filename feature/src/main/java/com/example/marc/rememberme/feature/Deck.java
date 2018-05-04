@@ -102,6 +102,12 @@ public class Deck implements Parcelable{
 
     }
 
+    public int getNumCards() {
+
+        return getNumDecks() * 52;
+
+    }
+
     public Deck(Parcel in) {
 
         this.cards = new ArrayList<>();

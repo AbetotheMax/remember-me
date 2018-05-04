@@ -8,7 +8,7 @@ import android.os.Parcelable;
  * Created by Marc on 4/17/2018.
  */
 
-public class GameHistoryOverview {
+public class GameHistoryOverview implements Parcelable{
 
     @ColumnInfo(name = "GAME_DATE")
     private String gameDate;
@@ -58,6 +58,55 @@ public class GameHistoryOverview {
     public long getDuration() {return duration;}
 
     public String getActionToTake() {return actionToTake;}
+
+    @Override
+    public int describeContents() {
+
+        return 0;
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(getGameDate());
+        dest.writeInt(getDeckId());
+        dest.writeString(getGameState());
+        dest.writeInt(getProgress());
+        dest.writeInt(getErrorCount());
+        dest.writeInt(getAccuracy());
+        dest.writeLong(getDuration());
+        dest.writeString(getActionToTake());
+
+    }
+
+    public GameHistoryOverview(Parcel in) {
+
+        setGameDate(in.readString());
+        setDeckId(in.readInt());
+        setGameState(in.readString());
+        setProgress(in.readInt());
+        setErrorCount(in.readInt());
+        setAccuracy(in.readInt());
+        setDuration(in.readLong());
+        setActionToTake(in.readString());
+
+    }
+
+    public static final Parcelable.Creator<GameHistoryOverview> CREATOR = new Parcelable.Creator<GameHistoryOverview>() {
+
+        public GameHistoryOverview createFromParcel(Parcel in) {
+
+            return new GameHistoryOverview(in);
+        }
+
+        public GameHistoryOverview[] newArray(int size) {
+
+            return new GameHistoryOverview[size];
+
+        }
+
+    };
 
 
 }
