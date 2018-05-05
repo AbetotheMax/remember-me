@@ -70,7 +70,7 @@ public interface GameSummaryDao {
             "WHEN " +
             "GAME_STATE = 'RECALL' " +
             "THEN " +
-            "IFNULL(100 - CAST((ERROR_COUNT * 1.0) / (LAST_POSITION * 1.0) * 100 AS INTEGER), 0) " +
+            "IFNULL(100 - CAST((ERROR_COUNT * 1.0) / ((LAST_POSITION + 1) * 1.0) * 100 AS INTEGER), 0) " +
             "ELSE " +
             "0 " +
             "END AS ACCURACY " +
@@ -121,7 +121,7 @@ public interface GameSummaryDao {
             "WHEN " +
             "GAME_STATE = 'RECALL' " +
             "THEN " +
-            "IFNULL(100 - CAST((ERROR_COUNT * 1.0) / (LAST_POSITION * 1.0) * 100 AS INTEGER), 0) " +
+            "IFNULL(100 - CAST((ERROR_COUNT * 1.0) / ((LAST_POSITION + 1) * 1.0) * 100 AS INTEGER), 0) " +
             "ELSE " +
             "0 " +
             "END AS ACCURACY " +

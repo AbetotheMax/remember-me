@@ -59,6 +59,8 @@ public class GameHistoryOverview implements Parcelable{
 
     public String getActionToTake() {return actionToTake;}
 
+    public GameHistoryOverview() {}
+
     @Override
     public int describeContents() {
 

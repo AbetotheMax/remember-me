@@ -1,6 +1,7 @@
 package com.example.marc.rememberme.feature;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.example.marc.rememberme.feature.Persistence.GameHistoryOverview;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.example.marc.rememberme.feature.GameReconstructor.GAME_OVERVIEW;
 
 /**
  * Created by Marc on 4/19/2018.
@@ -72,7 +75,11 @@ public class PreviousGamesListViewAdapter extends ArrayAdapter<GameHistoryOvervi
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GameReconstructor.reconstructGame(context, previousGames.get(position));
+
+                Intent intent = new Intent(context, GameReconstructor.class);
+                intent.putExtra(GAME_OVERVIEW, previousGames.get(position));
+                context.startActivity(intent);
+
             }
         });
 

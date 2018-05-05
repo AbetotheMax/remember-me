@@ -20,6 +20,7 @@ public class Deck implements Parcelable{
 
     public Deck() {
 
+        numDecks = 1;
         this.cards = new ArrayList<>();
 
     }
@@ -112,6 +113,7 @@ public class Deck implements Parcelable{
 
         this.cards = new ArrayList<>();
         in.readTypedList(cards, Card.CREATOR);
+        numDecks = cards.size() / 52;
 
     }
 

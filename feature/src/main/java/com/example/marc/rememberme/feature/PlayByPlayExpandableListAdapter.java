@@ -24,28 +24,20 @@ public class PlayByPlayExpandableListAdapter extends BaseExpandableListAdapter {
     private Context context;
     private String expandableListTitle;
     private List<Map<Card, Card>> expandableListDetail;
-    private Deck recallDeck;
-    private ViewPager pager;
-    private View rootView;
-    private GameHistory lastGameHistoryRecord;
+    private int callCount = 0;
 
-    public PlayByPlayExpandableListAdapter(Context context, String expandableListTitle, List<Map<Card, Card>> expandableListDetail,
-                                          Deck recallDeck, ViewPager pager, View rootView, GameHistory lastGameHistoryRecord) {
+    public PlayByPlayExpandableListAdapter(Context context, String expandableListTitle, List<Map<Card, Card>> expandableListDetail) {
 
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
-        this.recallDeck = recallDeck;
-        this.pager = pager;
-        this.rootView = rootView;
-        this.lastGameHistoryRecord = lastGameHistoryRecord;
 
     }
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
 
-        return this.expandableListDetail.get(listPosition);
+        return this.expandableListDetail.get(expandedListPosition);
 
     }
 
@@ -58,7 +50,7 @@ public class PlayByPlayExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
+        ++callCount;
         if(convertView == null) {
 
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService((Context.LAYOUT_INFLATER_SERVICE));
@@ -67,7 +59,7 @@ public class PlayByPlayExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView positionText = (TextView) convertView.findViewById(R.id.positionText);
-        positionText.setText(listPosition + " / " + expandableListDetail.size());
+        positionText.setText("Card " + (expandedListPosition + 1) + " / " + expandableListDetail.size());
 
         TextView cardChosenText = (TextView) convertView.findViewById(R.id.cardChosen);
         TextView actualCardText = (TextView) convertView.findViewById(R.id.actualCard);
@@ -76,8 +68,8 @@ public class PlayByPlayExpandableListAdapter extends BaseExpandableListAdapter {
 
         for(Map.Entry<Card, Card> entry : playByPlayEntry.entrySet()) {
 
-            cardChosenText.setText(entry.getValue().getCardNumber() + " of " + entry.getValue().getSuit());
-            actualCardText.setText(entry.getKey().getCardNumber() + " of " + entry.getKey().getSuit());
+            cardChosenText.setText("Card chosen: " + entry.getValue().getCardNumber() + " of " + entry.getValue().getSuit());
+            actualCardText.setText("Actual card: " + entry.getKey().getCardNumber() + " of " + entry.getKey().getSuit());
 
         }
 
@@ -89,7 +81,7 @@ public class PlayByPlayExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int listPosition) {
 
-        return 1;
+        return expandableListDetail.size();
 
     }
 
