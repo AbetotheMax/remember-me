@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.marc.rememberme.feature.Persistence.CardRecallErrors;
@@ -106,20 +108,32 @@ public class GameReconstructor extends AppCompatActivity {
         progress.setText((String) progress.getText() + " " + overview.getProgress() + "%");
 
         ViewStub recallDetailsStub = (ViewStub) findViewById(R.id.historyTransitionDetailsStub);
-        View recallDetailsInflated = recallDetailsStub.inflate();
-        TextView correctSelections = (TextView) recallDetailsInflated.findViewById(R.id.numberCorrect);
 
-        int correctSelectionsCount = (gameSummary.getLastPosition() + 1) - overview.getErrorCount();
-        correctSelections.setText((String) correctSelections.getText() + " " + correctSelectionsCount);
-        TextView errorCount = (TextView) recallDetailsInflated.findViewById(R.id.errorCount);
-        errorCount.setText((String) errorCount.getText() + " " + overview.getErrorCount());
-        TextView accuracyText = (TextView) recallDetailsInflated.findViewById(R.id.accuracy);
-        accuracyText.setText((String) accuracyText.getText() + " " + overview.getAccuracy() + "%");
-        ExpandableListView playByPlay = (ExpandableListView) recallDetailsInflated.findViewById(R.id.playByPlay);
-        PlayByPlayExpandableListAdapter adapter = new PlayByPlayExpandableListAdapter(
-                this, "Play by Play", loadPlayByPlay(deck, gameSummary.getSessionId(), gameSummary.getAttemptId(), gameSummary.getLastPosition())
-        );
-        playByPlay.setAdapter(adapter);
+        if(overview.getGameState().equals("RECALL")) {
+
+            View recallDetailsInflated = recallDetailsStub.inflate();
+            TextView correctSelections = (TextView) recallDetailsInflated.findViewById(R.id.numberCorrect);
+
+            int correctSelectionsCount = (gameSummary.getLastPosition() + 1) - overview.getErrorCount();
+            correctSelections.setText((String) correctSelections.getText() + " " + correctSelectionsCount);
+            TextView errorCount = (TextView) recallDetailsInflated.findViewById(R.id.errorCount);
+            errorCount.setText((String) errorCount.getText() + " " + overview.getErrorCount());
+            TextView accuracyText = (TextView) recallDetailsInflated.findViewById(R.id.accuracy);
+            accuracyText.setText((String) accuracyText.getText() + " " + overview.getAccuracy() + "%");
+//            ExpandableListView playByPlay = (ExpandableListView) recallDetailsInflated.findViewById(R.id.playByPlay);
+//            PlayByPlayExpandableListAdapter adapter = new PlayByPlayExpandableListAdapter(
+//                    this, "Play by Play", loadPlayByPlay(deck, gameSummary.getSessionId(), gameSummary.getAttemptId(), gameSummary.getLastPosition())
+//            );
+            ListView playByPlay = (ListView) recallDetailsInflated.findViewById(R.id.playByPlay);
+            PlayByPlayListViewAdapter adapter = new PlayByPlayListViewAdapter(this, loadPlayByPlay(deck, gameSummary.getSessionId(), gameSummary.getAttemptId(), gameSummary.getLastPosition()));
+
+            playByPlay.setAdapter(adapter);
+
+        } else {
+
+            recallDetailsStub.setVisibility(View.GONE);
+
+        }
 
     }
 
