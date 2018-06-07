@@ -32,12 +32,12 @@
         app:layout_constraintTop_toBottomOf="@+id/pageTitle" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/personName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="text"
         android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.282"
@@ -45,4 +45,52 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardToBeMapped" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/selectedPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/personName"
+        app:layout_constraintBottom_toTopOf="@+id/photoPicker"/>
+
+    <Button
+        android:id="@+id/photoPicker"
+        android:layout_width="167dp"
+        android:layout_height="36dp"
+        android:onClick="selectPhoto"
+        android:text="Add picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedPhoto"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        tools:text="Add picture" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="154dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
+        android:text="Save"
+        android:onClick="saveMapping"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photoPicker"
+        app:layout_constraintEnd_toStartOf="@id/cancelButton"/>
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="174dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="8dp"
+        android:text="Cancel"
+        android:onClick="cancelMapping"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/saveButton"
+        app:layout_constraintTop_toBottomOf="@+id/photoPicker" />
 </android.support.constraint.ConstraintLayout>
